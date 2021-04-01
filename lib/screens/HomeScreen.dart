@@ -1,3 +1,4 @@
+import 'package:climate_app/api/TodayApi.dart';
 import 'package:climate_app/model/WeatherModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:climate_app/utils/SizeConfig.dart';
 import 'package:flutter/painting.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:climate_app/services/services.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,56 +13,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  WeatherModel weatherModel = WeatherModel();
-
-  bool loading;
-  var data;
-
-  int temp;
+  Future<Weather> futureLocationWeather;
   @override
   void initState() {
-    loading = true;
     super.initState();
-    fetchData().then((value) {
-      setState(() {
-        data = value;
-        print(data);
-        print(data['main']['temp']);
-        // weatherModel = data;
-        // print(weatherModel.cnt);
-      });
-
-      print('1$loading');
-      print('2$loading');
-      updateUI();
-    });
-  }
-
-  void updateUI() {
-    setState(() {
-      if (data == null) {
-        return;
-      }
-
-      weatherModel = weatherModelFromJson(data);
-
-      temp = weatherModel.main.temp;
-      // var condition = weatherData['weather'][0]['id'];
-      // weatherIcon = weather.getWeatherIcon(condition);
-      // weatherMessage = weather.getMessage(temperature);
-      // cityName = weatherData['name'];
-    });
-  }
-
-  Future<dynamic> fetchData() async {
-    return await Services().getLocationWeather();
+    futureLocationWeather = TodayApi().getLocationWeather();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('3$loading');
-    // WeatherModel _weatherModel = loading ? null : data;
-    // print('5${_weatherModel.weather[0].description}');
     SizeConfig().init(context);
     return SafeArea(
       child: Scaffold(
@@ -83,123 +42,131 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: DefaultTabController(
                     length: 3,
                     child: TabBar(
-                        indicatorColor: Colors.green,
-                        tabs: [
-                          Tab(
-                            text: "Today",
-                          ),
-                          Tab(
-                            text: "Tomorrow",
-                          ),
-                          Tab(
-                            text: "6 Days",
-                          ),
-                        ],
-                        labelStyle: TextStyle(fontSize: 20),
-                        labelColor: Colors.black,
-                        indicator: MaterialIndicator(
-                          height: 1,
-                          color: Colors.black,
-                          tabPosition: TabPosition.bottom,
-                          horizontalPadding: 10,
-                        )
-                        // DotIndicator(
-                        //   color: Colors.black,
-                        //   distanceFromCenter: 16,
-                        //   radius: 3,
-                        //   paintingStyle: PaintingStyle.fill,
-                        // ),
+                      indicatorColor: Colors.green,
+                      tabs: [
+                        Tab(
+                          text: "Today",
                         ),
-                  ),
-                ),
-                Flexible(
-                  flex: 10,
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'wednesday, 18 nov',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                Text(
-                                  'Tokyo',
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                Text(
-                                  'Japan',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              child: RotatedBox(
-                                quarterTurns: 1,
-                                child: Text(
-                                  'Sunny',
-                                  style: TextStyle(fontSize: 40),
-                                ),
-                              ),
-                            ),
-                          ],
+                        Tab(
+                          text: "Tomorrow",
                         ),
-                        Container(
-                          height: SizeConfig.screenHeight * 0.45,
-                          width: SizeConfig.screenWidth,
-                          child: Image.network(
-                            'https://upload.wikimedia.org/wikipedia/commons/f/f1/Ski_trail_rating_symbol_red_circle.png',
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                loading
-                                    ? CircularProgressIndicator()
-                                    : Text(
-                                        temp.toString() ?? 'lag',
-                                        // data['current']['temp'].toString(),
-                                        // '19°',
-                                        style: TextStyle(
-                                          fontSize: 80,
-                                        ),
-                                        textAlign: TextAlign.start,
-                                      ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'Min: 17°',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  'Max: 25°',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ],
-                            ),
-                          ],
+                        Tab(
+                          text: "6 Days",
                         ),
                       ],
+                      labelStyle: TextStyle(fontSize: 20),
+                      labelColor: Colors.black,
+                      indicator: MaterialIndicator(
+                        height: 1,
+                        color: Colors.black,
+                        tabPosition: TabPosition.bottom,
+                        horizontalPadding: 10,
+                      ),
                     ),
                   ),
                 ),
+                FutureBuilder(
+                    future: futureLocationWeather,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text("${snapshot.error}"),
+                        );
+                      } else if (snapshot.hasData) {
+                        Weather data = snapshot.data;
+                        return Flexible(
+                          flex: 10,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'wednesday, 18 nov',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        Text(
+                                          'Tokyo',
+                                          style: TextStyle(fontSize: 30),
+                                        ),
+                                        Text(
+                                          'Japan',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      child: RotatedBox(
+                                        quarterTurns: 1,
+                                        child: Text(
+                                          'Sunny',
+                                          style: TextStyle(fontSize: 40),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  height: SizeConfig.screenHeight * 0.45,
+                                  width: SizeConfig.screenWidth,
+                                  child: Image.network(
+                                    'https://upload.wikimedia.org/wikipedia/commons/f/f1/Ski_trail_rating_symbol_red_circle.png',
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${data.temperature}°',
+                                          style: TextStyle(
+                                            fontSize: 80,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Min: ${data.minTemperature}°',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          'Max: ${data.maxTemperature}°',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return Flexible(
+                          flex: 10,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ));
+                    })
               ],
             ),
           ),

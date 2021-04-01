@@ -1,229 +1,111 @@
-// To parse this JSON data, do
-//
-//     final weatherModel = weatherModelFromJson(jsonString);
-
-import 'dart:convert';
-
-WeatherModel weatherModelFromJson(String str) =>
-    WeatherModel.fromJson(json.decode(str));
-
-String weatherModelToJson(WeatherModel data) => json.encode(data.toJson());
-
-class WeatherModel {
-  WeatherModel({
-    this.coord,
-    this.weather,
-    this.base,
-    this.main,
-    this.visibility,
-    this.wind,
-    this.clouds,
-    this.dt,
-    this.sys,
-    this.timezone,
-    this.id,
-    this.name,
-    this.cod,
-  });
-
-  Coord coord;
-  List<Weather> weather;
-  String base;
-  Main main;
-  int visibility;
-  Wind wind;
-  Clouds clouds;
-  int dt;
-  Sys sys;
-  int timezone;
-  int id;
-  String name;
-  int cod;
-
-  factory WeatherModel.fromJson(Map<String, dynamic> json) => WeatherModel(
-        coord: Coord.fromJson(json["coord"]),
-        weather: (json["weather"] as List)
-                ?.map((e) => Weather.fromJson(e))
-                ?.toList() ??
-            List.empty(),
-        base: json["base"],
-        main: Main.fromJson(json["main"]),
-        visibility: json["visibility"],
-        wind: Wind.fromJson(json["wind"]),
-        clouds: Clouds.fromJson(json["clouds"]),
-        dt: json["dt"],
-        sys: Sys.fromJson(json["sys"]),
-        timezone: json["timezone"],
-        id: json["id"],
-        name: json["name"],
-        cod: json["cod"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "coord": coord.toJson(),
-        "weather": List<dynamic>.from(weather.map((x) => x.toJson())),
-        "base": base,
-        "main": main.toJson(),
-        "visibility": visibility,
-        "wind": wind.toJson(),
-        "clouds": clouds.toJson(),
-        "dt": dt,
-        "sys": sys.toJson(),
-        "timezone": timezone,
-        "id": id,
-        "name": name,
-        "cod": cod,
-      };
-}
-
-class Clouds {
-  Clouds({
-    this.all,
-  });
-
-  int all;
-
-  factory Clouds.fromJson(Map<String, dynamic> json) => Clouds(
-        all: json["all"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "all": all,
-      };
-}
-
-class Coord {
-  Coord({
-    this.lon,
-    this.lat,
-  });
-
-  double lon;
-  double lat;
-
-  factory Coord.fromJson(Map<String, dynamic> json) => Coord(
-        lon: json["lon"].toDouble(),
-        lat: json["lat"].toDouble(),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "lon": lon,
-        "lat": lat,
-      };
-}
-
-class Main {
-  Main({
-    this.temp,
-    this.feelsLike,
-    this.tempMin,
-    this.tempMax,
-    this.pressure,
-    this.humidity,
-  });
-
-  int temp;
-  double feelsLike;
-  int tempMin;
-  int tempMax;
-  int pressure;
-  int humidity;
-
-  factory Main.fromJson(Map<String, dynamic> json) => Main(
-        temp: json["temp"],
-        feelsLike: json["feels_like"].toDouble(),
-        tempMin: json["temp_min"],
-        tempMax: json["temp_max"],
-        pressure: json["pressure"],
-        humidity: json["humidity"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "temp": temp,
-        "feels_like": feelsLike,
-        "temp_min": tempMin,
-        "temp_max": tempMax,
-        "pressure": pressure,
-        "humidity": humidity,
-      };
-}
-
-class Sys {
-  Sys({
-    this.type,
-    this.id,
-    this.country,
-    this.sunrise,
-    this.sunset,
-  });
-
-  int type;
-  int id;
-  String country;
-  int sunrise;
-  int sunset;
-
-  factory Sys.fromJson(Map<String, dynamic> json) => Sys(
-        type: json["type"],
-        id: json["id"],
-        country: json["country"],
-        sunrise: json["sunrise"],
-        sunset: json["sunset"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "type": type,
-        "id": id,
-        "country": country,
-        "sunrise": sunrise,
-        "sunset": sunset,
-      };
-}
+import 'package:climate_app/utils/WeatherIconMapper.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Weather {
-  Weather({
-    this.id,
-    this.main,
-    this.description,
-    this.icon,
-  });
-
   int id;
-  String main;
+  int time;
+  int sunrise;
+  int sunset;
+  int humidity;
+
   String description;
-  String icon;
+  String iconCode;
+  String main;
+  String cityName;
 
-  factory Weather.fromJson(Map<String, dynamic> json) => Weather(
-        id: json["id"],
-        main: json["main"],
-        description: json["description"],
-        icon: json["icon"],
-      );
+  double windSpeed;
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "main": main,
-        "description": description,
-        "icon": icon,
-      };
-}
+  int temperature;
+  int maxTemperature;
+  int minTemperature;
 
-class Wind {
-  Wind({
-    this.speed,
-    this.deg,
-  });
+  List<Weather> forecast;
 
-  double speed;
-  int deg;
+  Weather(
+      {this.id,
+      this.time,
+      this.sunrise,
+      this.sunset,
+      this.humidity,
+      this.description,
+      this.iconCode,
+      this.main,
+      this.cityName,
+      this.windSpeed,
+      this.temperature,
+      this.maxTemperature,
+      this.minTemperature,
+      this.forecast});
 
-  factory Wind.fromJson(Map<String, dynamic> json) => Wind(
-        speed: json["speed"].toDouble(),
-        deg: json["deg"],
-      );
+  static Weather fromJson(Map<String, dynamic> json) {
+    final weather = json['weather'][0];
+    return Weather(
+      id: weather['id'],
+      time: json['dt'],
+      description: weather['description'],
+      iconCode: weather['icon'],
+      main: weather['main'],
+      cityName: json['name'],
+      temperature: json['main']['temp'],
+      maxTemperature: json['main']['temp_max'],
+      minTemperature: json['main']['temp_min'],
+      sunrise: json['sys']['sunrise'],
+      sunset: json['sys']['sunset'],
+      humidity: json['main']['humidity'],
+      windSpeed: json['wind']['speed'],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "speed": speed,
-        "deg": deg,
-      };
+  static List<Weather> fromForecastJson(Map<String, dynamic> json) {
+    final weathers = List<Weather>();
+    for (final item in json['list']) {
+      weathers.add(Weather(
+          time: item['dt'],
+          temperature: item['main']['temp'],
+          iconCode: item['weather'][0]['icon']));
+    }
+    return weathers;
+  }
+
+  IconData getIconData() {
+    switch (this.iconCode) {
+      case '01d':
+        return WeatherIcons.clear_day;
+      case '01n':
+        return WeatherIcons.clear_night;
+      case '02d':
+        return WeatherIcons.few_clouds_day;
+      case '02n':
+        return WeatherIcons.few_clouds_day;
+      case '03d':
+      case '04d':
+        return WeatherIcons.clouds_day;
+      case '03n':
+      case '04n':
+        return WeatherIcons.clear_night;
+      case '09d':
+        return WeatherIcons.shower_rain_day;
+      case '09n':
+        return WeatherIcons.shower_rain_night;
+      case '10d':
+        return WeatherIcons.rain_day;
+      case '10n':
+        return WeatherIcons.rain_night;
+      case '11d':
+        return WeatherIcons.thunder_storm_day;
+      case '11n':
+        return WeatherIcons.thunder_storm_night;
+      case '13d':
+        return WeatherIcons.snow_day;
+      case '13n':
+        return WeatherIcons.snow_night;
+      case '50d':
+        return WeatherIcons.mist_day;
+      case '50n':
+        return WeatherIcons.mist_night;
+      default:
+        return WeatherIcons.clear_day;
+    }
+  }
 }
