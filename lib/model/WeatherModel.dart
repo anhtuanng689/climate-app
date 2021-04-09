@@ -15,10 +15,13 @@ class Weather {
   String cityName;
 
   double windSpeed;
+  int visibility;
+  int cloudiness;
 
-  int temperature;
-  int maxTemperature;
-  int minTemperature;
+  double temperature;
+  double maxTemperature;
+  double minTemperature;
+  double feelsLikeTemperature;
 
   List<Weather> forecast;
 
@@ -36,7 +39,10 @@ class Weather {
       this.temperature,
       this.maxTemperature,
       this.minTemperature,
-      this.forecast});
+      this.forecast,
+      this.feelsLikeTemperature,
+      this.visibility,
+      this.cloudiness});
 
   static Weather fromJson(Map<String, dynamic> json) {
     final weather = json['weather'][0];
@@ -47,13 +53,16 @@ class Weather {
       iconCode: weather['icon'],
       main: weather['main'],
       cityName: json['name'],
-      temperature: json['main']['temp'],
-      maxTemperature: json['main']['temp_max'],
-      minTemperature: json['main']['temp_min'],
+      temperature: json['main']['temp'].toDouble(),
+      maxTemperature: json['main']['temp_max'].toDouble(),
+      minTemperature: json['main']['temp_min'].toDouble(),
       sunrise: json['sys']['sunrise'],
       sunset: json['sys']['sunset'],
       humidity: json['main']['humidity'],
       windSpeed: json['wind']['speed'],
+      feelsLikeTemperature: json['main']['feels_like'],
+      visibility: json['visibility'],
+      cloudiness: json['clouds']['all'],
     );
   }
 
@@ -62,7 +71,7 @@ class Weather {
     for (final item in json['list']) {
       weathers.add(Weather(
           time: item['dt'],
-          temperature: item['main']['temp'],
+          temperature: item['main']['temp'].toDouble(),
           iconCode: item['weather'][0]['icon']));
     }
     return weathers;

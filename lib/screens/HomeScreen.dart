@@ -1,11 +1,12 @@
-import 'package:climate_app/api/TodayApi.dart';
 import 'package:climate_app/model/WeatherModel.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:climate_app/utils/SizeConfig.dart';
-import 'package:flutter/painting.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:climate_app/api/TodayApi.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+
+import 'TodayScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,165 +15,648 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<Weather> futureLocationWeather;
+  Future<List<Weather>> listFutureLocationWeather;
+
   @override
   void initState() {
     super.initState();
     futureLocationWeather = TodayApi().getLocationWeather();
+    listFutureLocationWeather = TodayApi().getForecast();
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color(0xFFEAE4CA),
-        body: SingleChildScrollView(
-          child: Container(
-            width: SizeConfig.screenWidth,
-            height: SizeConfig.screenHeight,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: buildFloatingSearchBar(),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: DefaultTabController(
-                    length: 3,
-                    child: TabBar(
-                      indicatorColor: Colors.green,
-                      tabs: [
-                        Tab(
-                          text: "Today",
-                        ),
-                        Tab(
-                          text: "Tomorrow",
-                        ),
-                        Tab(
-                          text: "6 Days",
-                        ),
-                      ],
-                      labelStyle: TextStyle(fontSize: 20),
-                      labelColor: Colors.black,
-                      indicator: MaterialIndicator(
-                        height: 1,
-                        color: Colors.black,
-                        tabPosition: TabPosition.bottom,
-                        horizontalPadding: 10,
-                      ),
-                    ),
-                  ),
-                ),
-                FutureBuilder(
-                    future: futureLocationWeather,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text("${snapshot.error}"),
-                        );
-                      } else if (snapshot.hasData) {
-                        Weather data = snapshot.data;
-                        return Flexible(
-                          flex: 10,
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'wednesday, 18 nov',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                        Text(
-                                          'Tokyo',
-                                          style: TextStyle(fontSize: 30),
-                                        ),
-                                        Text(
-                                          'Japan',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      child: RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Text(
-                                          'Sunny',
-                                          style: TextStyle(fontSize: 40),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: SizeConfig.screenHeight * 0.45,
-                                  width: SizeConfig.screenWidth,
-                                  child: Image.network(
-                                    'https://upload.wikimedia.org/wikipedia/commons/f/f1/Ski_trail_rating_symbol_red_circle.png',
-                                  ),
-                                ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '${data.temperature}°',
-                                          style: TextStyle(
-                                            fontSize: 80,
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Min: ${data.minTemperature}°',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          'Max: ${data.maxTemperature}°',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                      return Flexible(
-                          flex: 10,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ));
-                    })
-              ],
-            ),
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        flexibleSpace: buildFloatingSearchBar(),
+      ),
+      body: TodayScreen(
+        futureLocationWeather: futureLocationWeather,
+        listFutureLocationWeather: listFutureLocationWeather,
       ),
     );
+    // return DefaultTabController(
+    //   length: 3,
+    //   child: Scaffold(
+    //       body: NestedScrollView(
+    //     headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+    //       return <Widget>[
+    //         SliverAppBar(
+    //           elevation: 0,
+    //           centerTitle: true,
+    //           floating: true,
+    //           pinned: true,
+    //           leading: IconButton(
+    //             onPressed: () {},
+    //             icon: Icon(Icons.menu),
+    //           ),
+    //           title: TabBar(
+    //             isScrollable: true,
+    //             tabs: [
+    //               Tab(child: Text('Today')),
+    //               Tab(child: Text('Tomorrow')),
+    //               Tab(child: Text('5 days')),
+    //             ],
+    //           ),
+    //           actions: [
+    //             IconButton(
+    //               onPressed: () {},
+    //               icon: Icon(Icons.search),
+    //             ),
+    //           ],
+    //         ),
+    //       ];
+    //     },
+    //     body: TabBarView(
+    //       children: <Widget>[
+    //         TodayScreen(
+    //           futureLocationWeather: futureLocationWeather,
+    //           listFutureLocationWeather: listFutureLocationWeather,
+    //         ),
+    //         SingleChildScrollView(
+    //           child: Container(
+    //             height: SizeConfig.screenHeight * 1.5,
+    //             width: SizeConfig.screenWidth,
+    //             child: FutureBuilder(
+    //                 future: futureLocationWeather,
+    //                 builder: (context, snapshot) {
+    //                   if (snapshot.hasError) {
+    //                     return Center(
+    //                       child: Text("${snapshot.error}"),
+    //                     );
+    //                   } else if (snapshot.hasData) {
+    //                     Weather data = snapshot.data;
+    //                     print(DateFormat.yMMMd().format(
+    //                         DateTime.fromMillisecondsSinceEpoch(
+    //                             data.time * 1000)));
+    //
+    //                     return Container(
+    //                       padding: EdgeInsets.all(
+    //                           SizeConfig.blockSizeHorizontal * 2.5),
+    //                       child: Column(
+    //                         children: [
+    //                           Container(
+    //                             width: SizeConfig.screenWidth,
+    //                             height: SizeConfig.screenHeight * 0.15,
+    //                             child: Row(
+    //                               mainAxisAlignment:
+    //                                   MainAxisAlignment.spaceBetween,
+    //                               children: [
+    //                                 Column(
+    //                                   mainAxisAlignment:
+    //                                       MainAxisAlignment.center,
+    //                                   crossAxisAlignment:
+    //                                       CrossAxisAlignment.start,
+    //                                   children: [
+    //                                     Text(
+    //                                       '${DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(data.time * 1000))}',
+    //                                       style: TextStyle(
+    //                                           fontSize: SizeConfig
+    //                                                   .blockSizeHorizontal *
+    //                                               5),
+    //                                     ),
+    //                                     SizedBox(
+    //                                       height:
+    //                                           SizeConfig.blockSizeVertical * 1,
+    //                                     ),
+    //                                     Text(
+    //                                       '${data.cityName}',
+    //                                       style: TextStyle(
+    //                                           fontSize: SizeConfig
+    //                                                   .blockSizeHorizontal *
+    //                                               7.5),
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                                 Container(
+    //                                   child: RotatedBox(
+    //                                     quarterTurns: 1,
+    //                                     child: Text(
+    //                                       '${data.main}',
+    //                                       style: TextStyle(
+    //                                           fontSize: SizeConfig
+    //                                                   .blockSizeHorizontal *
+    //                                               10),
+    //                                     ),
+    //                                   ),
+    //                                 ),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                           Container(
+    //                             height: SizeConfig.screenHeight * 0.45,
+    //                             width: SizeConfig.screenWidth,
+    //                             child: Icon(
+    //                               data.getIconData(),
+    //                               size: SizeConfig.screenWidth * 0.60,
+    //                             ),
+    //                           ),
+    //                           Container(
+    //                             height: SizeConfig.screenHeight * 0.25,
+    //                             width: SizeConfig.screenWidth,
+    //                             child: Column(
+    //                               children: [
+    //                                 Row(
+    //                                   children: [
+    //                                     Text(
+    //                                       '${data.temperature}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 27,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                                 Row(
+    //                                   children: [
+    //                                     Icon(Icons.keyboard_arrow_down),
+    //                                     Text(
+    //                                       '${data.minTemperature}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 5,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                     SizedBox(
+    //                                       width:
+    //                                           SizeConfig.blockSizeHorizontal *
+    //                                               2.5,
+    //                                     ),
+    //                                     Icon(Icons.keyboard_arrow_up),
+    //                                     Text(
+    //                                       '${data.maxTemperature}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 5,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                                 SizedBox(
+    //                                   height: SizeConfig.blockSizeVertical,
+    //                                 ),
+    //                                 Row(
+    //                                   children: [
+    //                                     Text(
+    //                                       'Feel likes ${data.feelsLikeTemperature.round().toInt()}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 6,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                           SizedBox(
+    //                             height: SizeConfig.blockSizeVertical * 3,
+    //                           ),
+    //                           Row(
+    //                             children: [
+    //                               Text('Detail'),
+    //                             ],
+    //                           ),
+    //                           SizedBox(
+    //                             height: SizeConfig.blockSizeVertical * 3,
+    //                           ),
+    //                           Column(
+    //                             children: [
+    //                               Row(
+    //                                 mainAxisAlignment:
+    //                                     MainAxisAlignment.spaceBetween,
+    //                                 children: [
+    //                                   ClipRRect(
+    //                                     borderRadius: BorderRadius.circular(10),
+    //                                     child: Container(
+    //                                       width: SizeConfig.screenWidth / 3.5,
+    //                                       height:
+    //                                           SizeConfig.screenHeight * 0.12,
+    //                                       color: Colors.black38,
+    //                                       child: Column(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceEvenly,
+    //                                         children: [
+    //                                           Icon(Icons.visibility),
+    //                                           Text('Feels likes'),
+    //                                           Text('23'),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                   ClipRRect(
+    //                                     borderRadius: BorderRadius.circular(10),
+    //                                     child: Container(
+    //                                       width: SizeConfig.screenWidth / 3.5,
+    //                                       height:
+    //                                           SizeConfig.screenHeight * 0.12,
+    //                                       color: Colors.black38,
+    //                                       child: Column(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceEvenly,
+    //                                         children: [
+    //                                           Icon(Icons.visibility),
+    //                                           Text('Feels likes'),
+    //                                           Text('23'),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                   ClipRRect(
+    //                                     borderRadius: BorderRadius.circular(10),
+    //                                     child: Container(
+    //                                       width: SizeConfig.screenWidth / 3.5,
+    //                                       height:
+    //                                           SizeConfig.screenHeight * 0.12,
+    //                                       color: Colors.black38,
+    //                                       child: Column(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceEvenly,
+    //                                         children: [
+    //                                           Icon(Icons.visibility),
+    //                                           Text('Feels likes'),
+    //                                           Text('23'),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               ),
+    //                               SizedBox(
+    //                                 height: SizeConfig.blockSizeVertical * 3,
+    //                               ),
+    //                               Row(
+    //                                 mainAxisAlignment:
+    //                                     MainAxisAlignment.spaceBetween,
+    //                                 children: [
+    //                                   Container(
+    //                                     width: SizeConfig.screenWidth / 3.5,
+    //                                     height: SizeConfig.screenHeight * 0.12,
+    //                                     color: Colors.black38,
+    //                                     child: Column(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceEvenly,
+    //                                       children: [
+    //                                         Icon(Icons.visibility),
+    //                                         Text('Feels likes'),
+    //                                         Text('23'),
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                   Container(
+    //                                     width: SizeConfig.screenWidth / 3.5,
+    //                                     height: SizeConfig.screenHeight * 0.12,
+    //                                     color: Colors.black38,
+    //                                     child: Column(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceEvenly,
+    //                                       children: [
+    //                                         Icon(Icons.visibility),
+    //                                         Text('Feels likes'),
+    //                                         Text('23'),
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                   Container(
+    //                                     width: SizeConfig.screenWidth / 3.5,
+    //                                     height: SizeConfig.screenHeight * 0.12,
+    //                                     color: Colors.black38,
+    //                                     child: Column(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceEvenly,
+    //                                       children: [
+    //                                         Icon(Icons.visibility),
+    //                                         Text('Feels likes'),
+    //                                         Text('23'),
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               ),
+    //                             ],
+    //                           ),
+    //                           SizedBox(
+    //                             height: SizeConfig.blockSizeVertical * 3,
+    //                           ),
+    //                           Row(
+    //                             children: [
+    //                               Text('Air quality'),
+    //                             ],
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     );
+    //                   }
+    //                   return Container(
+    //                       child: Center(
+    //                     child: CircularProgressIndicator(),
+    //                   ));
+    //                 }),
+    //           ),
+    //         ),
+    //         SingleChildScrollView(
+    //           child: Container(
+    //             height: SizeConfig.screenHeight * 1.5,
+    //             width: SizeConfig.screenWidth,
+    //             child: FutureBuilder(
+    //                 future: futureLocationWeather,
+    //                 builder: (context, snapshot) {
+    //                   if (snapshot.hasError) {
+    //                     return Center(
+    //                       child: Text("${snapshot.error}"),
+    //                     );
+    //                   } else if (snapshot.hasData) {
+    //                     Weather data = snapshot.data;
+    //                     print(DateFormat.yMMMd().format(
+    //                         DateTime.fromMillisecondsSinceEpoch(
+    //                             data.time * 1000)));
+    //
+    //                     return Container(
+    //                       padding: EdgeInsets.all(
+    //                           SizeConfig.blockSizeHorizontal * 2.5),
+    //                       child: Column(
+    //                         children: [
+    //                           Container(
+    //                             width: SizeConfig.screenWidth,
+    //                             height: SizeConfig.screenHeight * 0.15,
+    //                             child: Row(
+    //                               mainAxisAlignment:
+    //                                   MainAxisAlignment.spaceBetween,
+    //                               children: [
+    //                                 Column(
+    //                                   mainAxisAlignment:
+    //                                       MainAxisAlignment.center,
+    //                                   crossAxisAlignment:
+    //                                       CrossAxisAlignment.start,
+    //                                   children: [
+    //                                     Text(
+    //                                       '${DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(data.time * 1000))}',
+    //                                       style: TextStyle(
+    //                                           fontSize: SizeConfig
+    //                                                   .blockSizeHorizontal *
+    //                                               5),
+    //                                     ),
+    //                                     SizedBox(
+    //                                       height:
+    //                                           SizeConfig.blockSizeVertical * 1,
+    //                                     ),
+    //                                     Text(
+    //                                       '${data.cityName}',
+    //                                       style: TextStyle(
+    //                                           fontSize: SizeConfig
+    //                                                   .blockSizeHorizontal *
+    //                                               7.5),
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                                 Container(
+    //                                   child: RotatedBox(
+    //                                     quarterTurns: 1,
+    //                                     child: Text(
+    //                                       '${data.main}',
+    //                                       style: TextStyle(
+    //                                           fontSize: SizeConfig
+    //                                                   .blockSizeHorizontal *
+    //                                               10),
+    //                                     ),
+    //                                   ),
+    //                                 ),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                           Container(
+    //                             height: SizeConfig.screenHeight * 0.45,
+    //                             width: SizeConfig.screenWidth,
+    //                             child: Icon(
+    //                               data.getIconData(),
+    //                               size: SizeConfig.screenWidth * 0.60,
+    //                             ),
+    //                           ),
+    //                           Container(
+    //                             height: SizeConfig.screenHeight * 0.25,
+    //                             width: SizeConfig.screenWidth,
+    //                             child: Column(
+    //                               children: [
+    //                                 Row(
+    //                                   children: [
+    //                                     Text(
+    //                                       '${data.temperature}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 27,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                                 Row(
+    //                                   children: [
+    //                                     Icon(Icons.keyboard_arrow_down),
+    //                                     Text(
+    //                                       '${data.minTemperature}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 5,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                     SizedBox(
+    //                                       width:
+    //                                           SizeConfig.blockSizeHorizontal *
+    //                                               2.5,
+    //                                     ),
+    //                                     Icon(Icons.keyboard_arrow_up),
+    //                                     Text(
+    //                                       '${data.maxTemperature}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 5,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                                 SizedBox(
+    //                                   height: SizeConfig.blockSizeVertical,
+    //                                 ),
+    //                                 Row(
+    //                                   children: [
+    //                                     Text(
+    //                                       'Feel likes ${data.feelsLikeTemperature.round().toInt()}°',
+    //                                       style: TextStyle(
+    //                                         fontSize:
+    //                                             SizeConfig.blockSizeHorizontal *
+    //                                                 6,
+    //                                       ),
+    //                                       textAlign: TextAlign.start,
+    //                                     ),
+    //                                   ],
+    //                                 ),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                           SizedBox(
+    //                             height: SizeConfig.blockSizeVertical * 3,
+    //                           ),
+    //                           Row(
+    //                             children: [
+    //                               Text('Detail'),
+    //                             ],
+    //                           ),
+    //                           SizedBox(
+    //                             height: SizeConfig.blockSizeVertical * 3,
+    //                           ),
+    //                           Column(
+    //                             children: [
+    //                               Row(
+    //                                 mainAxisAlignment:
+    //                                     MainAxisAlignment.spaceBetween,
+    //                                 children: [
+    //                                   ClipRRect(
+    //                                     borderRadius: BorderRadius.circular(10),
+    //                                     child: Container(
+    //                                       width: SizeConfig.screenWidth / 3.5,
+    //                                       height:
+    //                                           SizeConfig.screenHeight * 0.12,
+    //                                       color: Colors.black38,
+    //                                       child: Column(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceEvenly,
+    //                                         children: [
+    //                                           Icon(Icons.visibility),
+    //                                           Text('Feels likes'),
+    //                                           Text('23'),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                   ClipRRect(
+    //                                     borderRadius: BorderRadius.circular(10),
+    //                                     child: Container(
+    //                                       width: SizeConfig.screenWidth / 3.5,
+    //                                       height:
+    //                                           SizeConfig.screenHeight * 0.12,
+    //                                       color: Colors.black38,
+    //                                       child: Column(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceEvenly,
+    //                                         children: [
+    //                                           Icon(Icons.visibility),
+    //                                           Text('Feels likes'),
+    //                                           Text('23'),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                   ClipRRect(
+    //                                     borderRadius: BorderRadius.circular(10),
+    //                                     child: Container(
+    //                                       width: SizeConfig.screenWidth / 3.5,
+    //                                       height:
+    //                                           SizeConfig.screenHeight * 0.12,
+    //                                       color: Colors.black38,
+    //                                       child: Column(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceEvenly,
+    //                                         children: [
+    //                                           Icon(Icons.visibility),
+    //                                           Text('Feels likes'),
+    //                                           Text('23'),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               ),
+    //                               SizedBox(
+    //                                 height: SizeConfig.blockSizeVertical * 3,
+    //                               ),
+    //                               Row(
+    //                                 mainAxisAlignment:
+    //                                     MainAxisAlignment.spaceBetween,
+    //                                 children: [
+    //                                   Container(
+    //                                     width: SizeConfig.screenWidth / 3.5,
+    //                                     height: SizeConfig.screenHeight * 0.12,
+    //                                     color: Colors.black38,
+    //                                     child: Column(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceEvenly,
+    //                                       children: [
+    //                                         Icon(Icons.visibility),
+    //                                         Text('Feels likes'),
+    //                                         Text('23'),
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                   Container(
+    //                                     width: SizeConfig.screenWidth / 3.5,
+    //                                     height: SizeConfig.screenHeight * 0.12,
+    //                                     color: Colors.black38,
+    //                                     child: Column(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceEvenly,
+    //                                       children: [
+    //                                         Icon(Icons.visibility),
+    //                                         Text('Feels likes'),
+    //                                         Text('23'),
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                   Container(
+    //                                     width: SizeConfig.screenWidth / 3.5,
+    //                                     height: SizeConfig.screenHeight * 0.12,
+    //                                     color: Colors.black38,
+    //                                     child: Column(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceEvenly,
+    //                                       children: [
+    //                                         Icon(Icons.visibility),
+    //                                         Text('Feels likes'),
+    //                                         Text('23'),
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               ),
+    //                             ],
+    //                           ),
+    //                           SizedBox(
+    //                             height: SizeConfig.blockSizeVertical * 3,
+    //                           ),
+    //                           Row(
+    //                             children: [
+    //                               Text('Air quality'),
+    //                             ],
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     );
+    //                   }
+    //                   return Container(
+    //                       child: Center(
+    //                     child: CircularProgressIndicator(),
+    //                   ));
+    //                 }),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   )),
+    // );
   }
 }
 
@@ -204,7 +688,7 @@ Widget buildFloatingSearchBar() {
       FloatingSearchBarAction(
         showIfOpened: false,
         child: CircularButton(
-          icon: Icon(Icons.place),
+          icon: Icon(Icons.search),
           onPressed: () {},
         ),
       ),

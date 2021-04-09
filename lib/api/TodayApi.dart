@@ -18,7 +18,7 @@ class TodayApi {
     await location.getCurrentLocation();
 
     NetworkHelper networkHelper = NetworkHelper(
-        '$weatherURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric&lang=vi');
+        '$weatherURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
 
     var weatherData = await networkHelper.getData();
     return Weather.fromJson(weatherData);
@@ -29,7 +29,7 @@ class TodayApi {
     await location.getCurrentLocation();
 
     NetworkHelper networkHelper = NetworkHelper(
-        '$forecastHourlyURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric&lang=vi');
+        '$forecastHourlyURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
 
     var weatherData = await networkHelper.getData();
     List<Weather> weathers = Weather.fromForecastJson(weatherData);
