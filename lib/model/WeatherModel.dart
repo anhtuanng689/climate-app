@@ -22,6 +22,9 @@ class Weather {
   double maxTemperature;
   double minTemperature;
   double feelsLikeTemperature;
+  double uvi;
+
+  int aqi;
 
   List<Weather> forecast;
 
@@ -42,7 +45,9 @@ class Weather {
       this.forecast,
       this.feelsLikeTemperature,
       this.visibility,
-      this.cloudiness});
+      this.cloudiness,
+      this.uvi,
+      this.aqi});
 
   static Weather fromJson(Map<String, dynamic> json) {
     final weather = json['weather'][0];
@@ -66,6 +71,13 @@ class Weather {
     );
   }
 
+  static Weather fromAqiJson(Map<String, dynamic> json) {
+    final weather = json['data']['current']['pollution'];
+    return Weather(
+      aqi: weather['aqius'],
+    );
+  }
+
   static List<Weather> fromForecastJson(Map<String, dynamic> json) {
     final weathers = List<Weather>();
     for (final item in json['list']) {
@@ -75,6 +87,82 @@ class Weather {
           iconCode: item['weather'][0]['icon']));
     }
     return weathers;
+  }
+
+  static List<Weather> fromOneCallJson(Map<String, dynamic> json) {
+    final weathers = List<Weather>();
+    for (final item in json['daily']) {
+      weathers.add(
+        Weather(
+          time: item['dt'],
+          sunrise: item['sunrise'],
+          sunset: item['sunset'],
+          maxTemperature: item['temp']['max'].toDouble(),
+          minTemperature: item['temp']['min'].toDouble(),
+          iconCode: item['weather'][0]['icon'],
+          main: item['weather'][0]['main'],
+          description: item['weather'][0]['description'],
+          humidity: item['humidity'],
+          windSpeed: item['wind_speed'],
+          uvi: item['uvi'].toDouble(),
+          cloudiness: item['clouds'],
+        ),
+      );
+    }
+    return weathers;
+  }
+
+  Color colorFromHexss(String hexColor) {
+    final hexCode = hexColor.replaceAll('#', '');
+    return Color(int.parse('FF$hexCode', radix: 16));
+  }
+
+  String getAqiColor(int aqi) {
+    if (aqi > 300) {
+      return '7d0022';
+    } else if (aqi > 200) {
+      return '98004b';
+    } else if (aqi > 150) {
+      return 'fe0000';
+    } else if (aqi > 100) {
+      return 'fe7c00';
+    } else if (aqi > 50) {
+      return 'fefe00';
+    } else {
+      return '00e300';
+    }
+  }
+
+  String getAqiLevel(int aqi) {
+    if (aqi > 300) {
+      return 'Severely Polluted';
+    } else if (aqi > 200) {
+      return 'Heavily Polluted';
+    } else if (aqi > 150) {
+      return 'Moderately Polluted';
+    } else if (aqi > 100) {
+      return 'Lightly Polluted';
+    } else if (aqi > 50) {
+      return 'Good';
+    } else {
+      return 'Excellent';
+    }
+  }
+
+  String getAqiRecommend(int aqi) {
+    if (aqi > 300) {
+      return 'Stay indoors and avoid physical exertion';
+    } else if (aqi > 200) {
+      return 'Stay indoors and avoid outdoor activities';
+    } else if (aqi > 150) {
+      return 'Avoid sustained and high-intensity outdoor exercises';
+    } else if (aqi > 100) {
+      return 'Reduce sustained and high-intensity outdoor exercises';
+    } else if (aqi > 50) {
+      return 'Reduce outdoor activities a bit';
+    } else {
+      return 'Continue outdoor activities normally';
+    }
   }
 
   IconData getIconData() {

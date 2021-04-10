@@ -28,6 +28,7 @@ dependencies:
   http: ^0.13.1
   geolocator: ^7.0.1
   intl: ^0.17.0
+  flutter_native_splash: ^1.1.7+1
 
 #  json_annotation: ^4.0.1
 #  json_serializable: ^4.1.0
@@ -79,7 +80,6 @@ flutter:
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
         - asset: assets/fonts/Roboto-Bold.ttf
-          weight: 500
 #    - family: Glacial
 #      fonts:
 #        - asset: assets/fonts/GlacialIndifference-Regular.otf
