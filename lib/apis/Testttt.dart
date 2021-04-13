@@ -1,21 +1,21 @@
-import 'package:climate_app/model/WeatherModel.dart';
+import 'package:climate_app/models/WeatherModel.dart';
 import 'package:climate_app/services/Networking.dart';
 import 'package:climate_app/services/Location.dart';
 
-class WeatherApi {
+class WeatherApis {
   //https://api.openweathermap.org/data/2.5/weather?lat=21.0278&lon=105.8342&appid=c129d6d70d7dd89e779d849956cde9e9&units=metric&lang=vi
   static final String weatherURL =
       'https://api.openweathermap.org/data/2.5/weather';
 
-  static final String forecastHourlyURL =
+  static final String foreCastURL =
       'https://api.openweathermap.org/data/2.5/forecast';
 
-  static final String forecastDailyURL =
+  static final String oneCallURL =
       'https://api.openweathermap.org/data/2.5/onecall';
 
   static final String apiKey = 'c129d6d70d7dd89e779d849956cde9e9';
 
-  Future<Weather> getLocationWeather() async {
+  Future<Weather> getCityNameFromLocation() async {
     Location location = Location();
     await location.getCurrentLocation();
 
@@ -26,27 +26,29 @@ class WeatherApi {
     return Weather.fromJson(weatherData);
   }
 
-  Future<List<Weather>> getHourlyForecast() async {
-    Location location = Location();
-    await location.getCurrentLocation();
-
+  Future<Weather> getLocationWeather(double lat, double lon) async {
     NetworkHelper networkHelper = NetworkHelper(
-        '$forecastHourlyURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
+        '$oneCallURL?lat=$lat&lon=$lon&appid=$apiKey&units=metric');
 
     var weatherData = await networkHelper.getData();
-    List<Weather> weathers = Weather.fromForecastJson(weatherData);
+    return Weather.fromCurrentJson(weatherData);
+  }
+
+  Future<List<Weather>> getHourlyForecast(double lat, double lon) async {
+    NetworkHelper networkHelper = NetworkHelper(
+        '$foreCastURL?lat=$lat&lon=$lon&appid=$apiKey&units=metric');
+
+    var weatherData = await networkHelper.getData();
+    List<Weather> weathers = Weather.fromHourlyJson(weatherData);
     return weathers;
   }
 
-  Future<List<Weather>> getDailyForecast() async {
-    Location location = Location();
-    await location.getCurrentLocation();
-
+  Future<List<Weather>> getDailyForecast(double lat, double lon) async {
     NetworkHelper networkHelper = NetworkHelper(
-        '$forecastDailyURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
+        '$oneCallURL?lat=$lat&lon=$lon&appid=$apiKey&units=metric');
 
     var weatherData = await networkHelper.getData();
-    List<Weather> weathers = Weather.fromOneCallJson(weatherData);
+    List<Weather> weathers = Weather.fromDailyJson(weatherData);
     return weathers;
   }
 }

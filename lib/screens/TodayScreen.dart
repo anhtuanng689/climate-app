@@ -1,4 +1,4 @@
-import 'package:climate_app/model/WeatherModel.dart';
+import 'package:climate_app/models/WeatherModel.dart';
 import 'package:climate_app/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +24,7 @@ class TodayScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        height: SizeConfig.screenHeight * 3.5,
+        height: SizeConfig.screenHeight * 2.5,
         width: SizeConfig.screenWidth,
         padding: EdgeInsets.symmetric(
             horizontal: SizeConfig.blockSizeHorizontal * 2),
@@ -772,7 +772,7 @@ class TodayScreen extends StatelessWidget {
               height: SizeConfig.blockSizeVertical,
             ),
             DetailProgressBar(
-              width: SizeConfig.screenWidth * 0.95,
+              width: SizeConfig.screenWidth * 0.9,
               height: SizeConfig.safeBlockVertical * 2,
               radius: 0,
               assetsLimit: 500,
@@ -789,7 +789,7 @@ class TodayScreen extends StatelessWidget {
               height: SizeConfig.blockSizeVertical,
             ),
             MyAssetsBar(
-              width: SizeConfig.screenWidth * 0.95,
+              width: SizeConfig.screenWidth * 0.9,
               height: SizeConfig.safeBlockVertical,
               background: colorFromHex("CFD8DC"),
               radius: 0,

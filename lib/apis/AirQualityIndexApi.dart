@@ -1,4 +1,4 @@
-import 'package:climate_app/model/WeatherModel.dart';
+import 'package:climate_app/models/WeatherModel.dart';
 import 'package:climate_app/services/Networking.dart';
 import 'package:climate_app/services/Location.dart';
 

@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Weather {
+  double latitude;
+  double longitude;
+
   int id;
   int time;
   int sunrise;
@@ -29,7 +32,9 @@ class Weather {
   List<Weather> forecast;
 
   Weather(
-      {this.id,
+      {this.latitude,
+      this.longitude,
+      this.id,
       this.time,
       this.sunrise,
       this.sunset,
@@ -52,6 +57,8 @@ class Weather {
   static Weather fromJson(Map<String, dynamic> json) {
     final weather = json['weather'][0];
     return Weather(
+      longitude: json['coord']['lon'],
+      latitude: json['coord']['lat'],
       id: weather['id'],
       time: json['dt'],
       description: weather['description'],
@@ -64,10 +71,31 @@ class Weather {
       sunrise: json['sys']['sunrise'],
       sunset: json['sys']['sunset'],
       humidity: json['main']['humidity'],
-      windSpeed: json['wind']['speed'],
-      feelsLikeTemperature: json['main']['feels_like'],
+      windSpeed: json['wind']['speed'].toDouble(),
+      feelsLikeTemperature: json['main']['feels_like'].toDouble(),
       visibility: json['visibility'],
       cloudiness: json['clouds']['all'],
+    );
+  }
+
+  static Weather fromCurrentJson(Map<String, dynamic> json) {
+    final weather = json['current'];
+    return Weather(
+      longitude: json['lon'].toDouble(),
+      latitude: json['lat'].toDouble(),
+      time: weather['dt'],
+      sunrise: weather['sunrise'],
+      sunset: weather['sunset'],
+      description: weather['weather'][0]['description'],
+      iconCode: weather['weather'][0]['icon'],
+      main: weather['weather'][0]['main'],
+      temperature: weather['temp'].toDouble(),
+      humidity: weather['humidity'],
+      windSpeed: weather['wind_speed'].toDouble(),
+      feelsLikeTemperature: weather['feels_like'].toDouble(),
+      visibility: weather['visibility'],
+      cloudiness: weather['clouds'],
+      uvi: weather['uvi'].toDouble(),
     );
   }
 
@@ -89,11 +117,36 @@ class Weather {
     return weathers;
   }
 
-  static List<Weather> fromOneCallJson(Map<String, dynamic> json) {
+  static List<Weather> fromHourlyJson(Map<String, dynamic> json) {
+    final weathers = List<Weather>();
+    for (final item in json['hourly']) {
+      weathers.add(
+        Weather(
+          latitude: json['lat'].toDouble(),
+          longitude: json['lon'].toDouble(),
+          time: item['dt'],
+          temperature: item['temp'].toDouble(),
+          iconCode: item['weather'][0]['icon'],
+          main: item['weather'][0]['main'],
+          description: item['weather'][0]['description'],
+          humidity: item['humidity'],
+          windSpeed: item['wind_speed'].toDouble(),
+          visibility: item['visibility'],
+          uvi: item['uvi'].toDouble(),
+          cloudiness: item['clouds'],
+        ),
+      );
+    }
+    return weathers;
+  }
+
+  static List<Weather> fromDailyJson(Map<String, dynamic> json) {
     final weathers = List<Weather>();
     for (final item in json['daily']) {
       weathers.add(
         Weather(
+          latitude: json['lat'].toDouble(),
+          longitude: json['lon'].toDouble(),
           time: item['dt'],
           sunrise: item['sunrise'],
           sunset: item['sunset'],
@@ -103,7 +156,7 @@ class Weather {
           main: item['weather'][0]['main'],
           description: item['weather'][0]['description'],
           humidity: item['humidity'],
-          windSpeed: item['wind_speed'],
+          windSpeed: item['wind_speed'].toDouble(),
           uvi: item['uvi'].toDouble(),
           cloudiness: item['clouds'],
         ),

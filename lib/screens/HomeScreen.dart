@@ -1,9 +1,9 @@
-import 'package:climate_app/model/WeatherModel.dart';
+import 'package:climate_app/models/WeatherModel.dart';
 import 'package:climate_app/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
-import 'package:climate_app/api/WeatherApi.dart';
+import 'package:climate_app/apis/WeatherApi.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:climate_app/api/AirQualityIndexApi.dart';
+import 'package:climate_app/apis/AirQualityIndexApi.dart';
 
 import 'TodayScreen.dart';
 
@@ -13,6 +13,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // Future<Weather> futureLocationWeather = WeatherApi().getLocationWeather();
+  // Future<List<Weather>> listHourlyFutureLocationWeather =
+  //     WeatherApi().getHourlyForecast();
+  // Future<List<Weather>> listDailyFutureLocationWeather =
+  //     WeatherApi().getDailyForecast();
+  // Future<Weather> futureAqiLocationWeather =
+  //     AirQualityIndexApi().getLocationAqi();
+
   Future<Weather> futureLocationWeather;
   Future<List<Weather>> listHourlyFutureLocationWeather;
   Future<List<Weather>> listDailyFutureLocationWeather;
