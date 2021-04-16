@@ -1,108 +1,178 @@
-import 'package:climate_app/models/WeatherModel.dart';
-import 'package:climate_app/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
-import 'package:climate_app/apis/WeatherApi.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-import 'package:climate_app/apis/AirQualityIndexApi.dart';
+import 'package:flutter_weather/widgets/endDrawer.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'TodayScreen.dart';
+import '../provider/weatherProvider.dart';
+import '../widgets/WeatherInfo.dart';
+import '../widgets/fadeIn.dart';
+import '../widgets/hourlyForecast.dart';
+import '../widgets/locationError.dart';
+import '../widgets/mainWeather.dart';
+import '../widgets/requestError.dart';
+import '../widgets/searchBar.dart';
+import '../widgets/weatherDetail.dart';
+import '../widgets/sevenDayForecast.dart';
+import '../widgets/aqi.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const routeName = '/homeScreen';
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Future<Weather> futureLocationWeather = WeatherApi().getLocationWeather();
-  // Future<List<Weather>> listHourlyFutureLocationWeather =
-  //     WeatherApi().getHourlyForecast();
-  // Future<List<Weather>> listDailyFutureLocationWeather =
-  //     WeatherApi().getDailyForecast();
-  // Future<Weather> futureAqiLocationWeather =
-  //     AirQualityIndexApi().getLocationAqi();
-
-  Future<Weather> futureLocationWeather;
-  Future<List<Weather>> listHourlyFutureLocationWeather;
-  Future<List<Weather>> listDailyFutureLocationWeather;
-  Future<Weather> futureAqiLocationWeather;
+  PageController _pageController = PageController();
+  bool _isLoading;
 
   @override
   void initState() {
     super.initState();
-    futureLocationWeather = WeatherApi().getLocationWeather();
-    listHourlyFutureLocationWeather = WeatherApi().getHourlyForecast();
-    listDailyFutureLocationWeather = WeatherApi().getDailyForecast();
-    futureAqiLocationWeather = AirQualityIndexApi().getLocationAqi();
+    _getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
+  }
+
+  Future<void> _getData() async {
+    _isLoading = true;
+    final weatherData = Provider.of<WeatherProvider>(context, listen: false);
+    weatherData.getWeatherData();
+    _isLoading = false;
+  }
+
+  Future<void> _refreshData(BuildContext context) async {
+    await Provider.of<WeatherProvider>(context, listen: false).getWeatherData();
   }
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        flexibleSpace: buildFloatingSearchBar(),
-      ),
-      body: TodayScreen(
-        futureLocationWeather: futureLocationWeather,
-        listHourlyFutureLocationWeather: listHourlyFutureLocationWeather,
-        listDailyFutureLocationWeather: listDailyFutureLocationWeather,
-        aqiFutureLocationWeather: futureAqiLocationWeather,
+    final weatherData = Provider.of<WeatherProvider>(context);
+    final myContext = Theme.of(context);
+    final mediaQuery = MediaQuery.of(context);
+
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        endDrawerEnableOpenDragGesture: false,
+        endDrawer: endDrawer(),
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: myContext.primaryColor,
+                ),
+              )
+            : weatherData.loading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: myContext.primaryColor,
+                    ),
+                  )
+                : weatherData.isLocationError
+                    ? LocationError()
+                    : Column(
+                        children: [
+                          SearchBar(),
+                          SmoothPageIndicator(
+                            controller: _pageController,
+                            count: 2,
+                            effect: ExpandingDotsEffect(
+                              activeDotColor: myContext.primaryColor,
+                              dotHeight: 6,
+                              dotWidth: 6,
+                            ),
+                          ),
+                          weatherData.isRequestError
+                              ? RequestError()
+                              : Expanded(
+                                  child: PageView(
+                                    controller: _pageController,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        width: mediaQuery.size.width,
+                                        child: RefreshIndicator(
+                                          onRefresh: () =>
+                                              _refreshData(context),
+                                          backgroundColor: Colors.blue,
+                                          child: ListView(
+                                            children: [
+                                              FadeIn(
+                                                  delay: 0,
+                                                  child: MainWeather(
+                                                      wData: weatherData)),
+                                              FadeIn(
+                                                delay: 0.33,
+                                                child: WeatherInfo(
+                                                    wData: weatherData
+                                                        .currentWeather),
+                                              ),
+                                              FadeIn(
+                                                delay: 0.66,
+                                                child: HourlyForecast(
+                                                    weatherData.hourlyWeather),
+                                              ),
+                                              FadeIn(
+                                                delay: 1,
+                                                child:
+                                                    Aqi(wData: weatherData.aqi),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: mediaQuery.size.height,
+                                        width: mediaQuery.size.width,
+                                        child: RefreshIndicator(
+                                          onRefresh: () =>
+                                              _refreshData(context),
+                                          backgroundColor: Colors.blue,
+                                          child: ListView(
+                                            children: [
+                                              FadeIn(
+                                                delay: 0.33,
+                                                child: SevenDayForecast(
+                                                  wData: weatherData,
+                                                  dWeather: weatherData
+                                                      .sevenDayWeather,
+                                                ),
+                                              ),
+                                              FadeIn(
+                                                  delay: 0.66,
+                                                  child: WeatherDetail(
+                                                      wData: weatherData)),
+                                              FadeIn(
+                                                  delay: 1,
+                                                  child: Container(
+                                                    padding: EdgeInsets.only(
+                                                        right: 15),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Text(
+                                                          'Data from OpenWeatherMap and AirVisual',
+                                                          style: TextStyle(
+                                                              color: Colors.grey
+                                                                  .shade500),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ],
+                      ),
       ),
     );
   }
-}
-
-Widget buildFloatingSearchBar() {
-  return FloatingSearchBar(
-    hint: 'Search city',
-    scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-    transitionDuration: const Duration(milliseconds: 800),
-    transitionCurve: Curves.easeInOut,
-    physics: const BouncingScrollPhysics(),
-    openAxisAlignment: 0.0,
-    debounceDelay: const Duration(milliseconds: 500),
-    onQueryChanged: (query) {
-      // Call your model, bloc, controller here.
-    },
-    // Specify a custom transition to be used for
-    // animating between opened and closed stated.
-    transition: CircularFloatingSearchBarTransition(),
-    leadingActions: [
-      FloatingSearchBarAction(
-        showIfOpened: false,
-        child: CircularButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {},
-        ),
-      ),
-    ],
-    actions: [
-      FloatingSearchBarAction(
-        showIfOpened: false,
-        child: CircularButton(
-          icon: Icon(Icons.search),
-          onPressed: () {},
-        ),
-      ),
-      FloatingSearchBarAction.searchToClear(
-        showIfClosed: false,
-      ),
-    ],
-    builder: (context, transition) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Material(
-          color: Colors.white,
-          elevation: 4.0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: Colors.accents.map((color) {
-              return Container(height: 112, color: color);
-            }).toList(),
-          ),
-        ),
-      );
-    },
-  );
 }
