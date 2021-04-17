@@ -23,7 +23,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController = PageController();
-  bool _isLoading;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -44,21 +45,31 @@ class _HomeScreenState extends State<HomeScreen> {
     _isLoading = false;
   }
 
+  // Future<void> _getDrawerData() async {
+  //   _isDrawer = true;
+  //   weatherData.getWeatherLocationEndDrawer();
+  //   _isDrawer = false;
+  // }
+
   Future<void> _refreshData(BuildContext context) async {
     await Provider.of<WeatherProvider>(context, listen: false).getWeatherData();
   }
 
   @override
   Widget build(BuildContext context) {
-    final weatherData = Provider.of<WeatherProvider>(context);
+    final weatherData = Provider.of<WeatherProvider>(context, listen: false);
     final myContext = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-
+    print('is loading: $_isLoading');
+    print('wea loading: ${weatherData.loading}');
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         endDrawerEnableOpenDragGesture: false,
-        endDrawer: endDrawer(),
+        endDrawer: EndDrawer(
+          lWeather: weatherData.listWeather,
+          cityList: weatherData.cityList,
+        ),
         body: _isLoading
             ? Center(
                 child: CircularProgressIndicator(

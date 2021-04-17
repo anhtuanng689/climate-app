@@ -36,7 +36,7 @@ class Aqi extends StatelessWidget {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.22,
+          height: MediaQuery.of(context).size.height * 0.225,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.all(15),
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -92,7 +92,7 @@ class Aqi extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                height: 15,
+                height: 20,
               ),
               DetailProgressBar(
                 width: MediaQuery.of(context).size.width * 0.75,
@@ -119,7 +119,7 @@ class Aqi extends StatelessWidget {
                 assetsLimit: 500,
                 assets: [
                   MyAsset(size: 50, color: colorFromHex("00e300")),
-                  MyAsset(size: 50, color: colorFromHex("ffeb3b")),
+                  MyAsset(size: 50, color: colorFromHex("e5d335")),
                   MyAsset(size: 50, color: colorFromHex("fe7c00")),
                   MyAsset(size: 50, color: colorFromHex("fe0000")),
                   MyAsset(size: 100, color: colorFromHex("98004b")),

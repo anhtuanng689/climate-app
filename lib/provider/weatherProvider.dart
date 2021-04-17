@@ -13,13 +13,17 @@ class WeatherProvider with ChangeNotifier {
   Weather weather = Weather();
   DailyWeather currentWeather = DailyWeather();
   Aqi aqi = Aqi();
+
+  List<String> cityList = ['Hanoi', 'Haiphong', 'Paris', 'Hue', 'Tokyo'];
+
+  List<Weather> listWeather = [];
   List<DailyWeather> hourlyWeather = [];
   List<DailyWeather> hourly24Weather = [];
-  List<DailyWeather> fiveDayWeather = [];
   List<DailyWeather> sevenDayWeather = [];
   bool loading;
   bool isRequestError = false;
   bool isLocationError = false;
+  bool loadingDrawer = false;
 
   getWeatherData() async {
     loading = true;
@@ -98,6 +102,7 @@ class WeatherProvider with ChangeNotifier {
       } else {
         loading = false;
         isLocationError = true;
+        print('loi location');
         notifyListeners();
       }
     });
@@ -177,5 +182,27 @@ class WeatherProvider with ChangeNotifier {
       notifyListeners();
       throw error;
     }
+  }
+
+  getWeatherLocationEndDrawer() async {
+    loadingDrawer = true;
+    var list = [];
+    for (var index in cityList) {
+      Uri url = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?q=$index&units=metric&appid=$apiKeyOpenWeatherMap');
+      try {
+        final response = await http.get(url);
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
+        list.add(Weather.fromJson(extractedData));
+        notifyListeners();
+      } catch (error) {
+        loadingDrawer = false;
+        notifyListeners();
+        throw error;
+      }
+    }
+    loadingDrawer = false;
+    notifyListeners();
   }
 }

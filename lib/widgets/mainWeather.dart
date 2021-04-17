@@ -22,7 +22,7 @@ class MainWeather extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
-      height: MediaQuery.of(context).size.height / 3,
+      height: MediaQuery.of(context).size.height / 3.2,
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,13 +49,6 @@ class MainWeather extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // RotatedBox(
-                  //   quarterTurns: 1,
-                  //   child: Text(
-                  //     toBeginningOfSentenceCase('${wData.weather.currently}'),
-                  //     style: _style1.copyWith(fontSize: 20),
-                  //   ),
-                  // ),
                 ],
               ),
               SizedBox(

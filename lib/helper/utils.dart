@@ -37,7 +37,7 @@ class AqiString {
     } else if (aqi > 100) {
       return 'fe7c00';
     } else if (aqi > 50) {
-      return 'ffeb3b';
+      return 'e5d335';
     } else {
       return '00e300';
     }
