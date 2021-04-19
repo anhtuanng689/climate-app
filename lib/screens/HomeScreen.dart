@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/endDrawer.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -24,7 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController = PageController();
 
-  bool _isLoading = false;
+  bool _isLoading;
 
   @override
   void initState() {
@@ -40,16 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _getData() async {
     _isLoading = true;
+    print('getting...');
     final weatherData = Provider.of<WeatherProvider>(context, listen: false);
     weatherData.getWeatherData();
+    print('getting done');
     _isLoading = false;
   }
-
-  // Future<void> _getDrawerData() async {
-  //   _isDrawer = true;
-  //   weatherData.getWeatherLocationEndDrawer();
-  //   _isDrawer = false;
-  // }
 
   Future<void> _refreshData(BuildContext context) async {
     await Provider.of<WeatherProvider>(context, listen: false).getWeatherData();
@@ -57,11 +54,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final weatherData = Provider.of<WeatherProvider>(context, listen: false);
+    final weatherData = Provider.of<WeatherProvider>(context);
     final myContext = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
+    final notification = Provider.of<NotificationService>(context);
+
     print('is loading: $_isLoading');
     print('wea loading: ${weatherData.loading}');
+    print('deny location: ${weatherData.isLocationError}');
+    print('list weather: ${weatherData.listWeather}');
+    print('list city: ${weatherData.cityList}');
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -122,12 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         .currentWeather),
                                               ),
                                               FadeIn(
-                                                delay: 0.66,
+                                                delay: 0.44,
                                                 child: HourlyForecast(
                                                     weatherData.hourlyWeather),
                                               ),
                                               FadeIn(
-                                                delay: 1,
+                                                delay: 0.55,
                                                 child:
                                                     Aqi(wData: weatherData.aqi),
                                               ),
@@ -156,24 +158,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   delay: 0.66,
                                                   child: WeatherDetail(
                                                       wData: weatherData)),
-                                              FadeIn(
-                                                  delay: 1,
-                                                  child: Container(
-                                                    padding: EdgeInsets.only(
-                                                        right: 15),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Text(
-                                                          'Data from OpenWeatherMap and AirVisual',
-                                                          style: TextStyle(
-                                                              color: Colors.grey
-                                                                  .shade500),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
                                             ],
                                           ),
                                         ),

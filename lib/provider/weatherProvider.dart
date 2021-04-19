@@ -14,7 +14,8 @@ class WeatherProvider with ChangeNotifier {
   DailyWeather currentWeather = DailyWeather();
   Aqi aqi = Aqi();
 
-  List<String> cityList = ['Hanoi', 'Haiphong', 'Paris', 'Hue', 'Tokyo'];
+  List<String> cityList = ['Hanoi', 'Haiphong'];
+  List<String> cityList1 = ['Hanoi', 'Haiphong', 'Paris', 'Hue', 'Tokyo'];
 
   List<Weather> listWeather = [];
   List<DailyWeather> hourlyWeather = [];
@@ -186,16 +187,16 @@ class WeatherProvider with ChangeNotifier {
 
   getWeatherLocationEndDrawer() async {
     loadingDrawer = true;
-    var list = [];
     for (var index in cityList) {
       Uri url = Uri.parse(
           'https://api.openweathermap.org/data/2.5/weather?q=$index&units=metric&appid=$apiKeyOpenWeatherMap');
       try {
+        print('index: $index');
         final response = await http.get(url);
         final extractedData =
             json.decode(response.body) as Map<String, dynamic>;
-        list.add(Weather.fromJson(extractedData));
-        notifyListeners();
+        print('data: $extractedData');
+        listWeather.add(Weather.fromJson(extractedData));
       } catch (error) {
         loadingDrawer = false;
         notifyListeners();

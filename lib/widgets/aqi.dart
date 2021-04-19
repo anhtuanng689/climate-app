@@ -36,7 +36,7 @@ class Aqi extends StatelessWidget {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.225,
+          height: MediaQuery.of(context).size.height * 0.2475,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.all(15),
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),

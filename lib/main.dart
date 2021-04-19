@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/screens/SettingScreen.dart';
+import 'package:flutter_weather/services/notification.dart';
 import 'package:provider/provider.dart';
 
 import './Screens/hourlyWeatherScreen.dart';
@@ -15,8 +17,15 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => WeatherProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => WeatherProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => NotificationService(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Climate',
         debugShowCheckedModeBanner: false,
@@ -36,6 +45,7 @@ class MyApp extends StatelessWidget {
         routes: {
           WeeklyScreen.routeName: (myCtx) => WeeklyScreen(),
           HourlyScreen.routeName: (myCtx) => HourlyScreen(),
+          SettingScreen.routeName: (myCtx) => SettingScreen(),
         },
       ),
     );

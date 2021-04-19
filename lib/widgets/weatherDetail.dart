@@ -76,9 +76,10 @@ class WeatherDetail extends StatelessWidget {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height / 2.5,
+          height: MediaQuery.of(context).size.height / 2.375,
           width: MediaQuery.of(context).size.width,
           child: GridView(
+            physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.all(15),
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 250,
@@ -91,15 +92,17 @@ class WeatherDetail extends StatelessWidget {
                   WeatherIcons.wiRaindrop),
               _gridWeatherBuilder('${wData.weather.windSpeed} km/h', 'Wind',
                   WeatherIcons.wiStrongWind),
-              _gridWeatherBuilder(
-                  '${wData.weather.visibility / 1000} km',
-                  'Visibility',
-                  WeatherIcons.wiSmallCraftAdvisory),
+              _gridWeatherBuilder('${wData.weather.visibility / 1000} km',
+                  'Visibility', WeatherIcons.wiSmallCraftAdvisory),
               _gridWeatherBuilder('${wData.weather.pressure} hPa', 'Pressure',
                   WeatherIcons.wiBarometer),
-                  _gridWeatherBuilder('${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunrise * 1000))}', 'Sunrise',
+              _gridWeatherBuilder(
+                  '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunrise * 1000))}',
+                  'Sunrise',
                   WeatherIcons.wiSunrise),
-                  _gridWeatherBuilder('${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunset * 1000))}', 'Sunset',
+              _gridWeatherBuilder(
+                  '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunset * 1000))}',
+                  'Sunset',
                   WeatherIcons.wiSunset),
             ],
           ),
