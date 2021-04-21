@@ -59,9 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final mediaQuery = MediaQuery.of(context);
     final notification = Provider.of<NotificationService>(context);
 
-    print('is loading: $_isLoading');
-    print('wea loading: ${weatherData.loading}');
-    print('deny location: ${weatherData.isLocationError}');
+    // print('is loading: $_isLoading');
+    // print('wea loading: ${weatherData.loading}');
+    // print('deny location: ${weatherData.isLocationError}');
     print('list weather: ${weatherData.listWeather}');
     print('list city: ${weatherData.cityList}');
     return SafeArea(

@@ -103,11 +103,16 @@ class HourlyForecast extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: hourlyForecast
-                  .map((item) => hourlyWidget(item, context))
-                  .toList()),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(HourlyScreen.routeName);
+            },
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: hourlyForecast
+                    .map((item) => hourlyWidget(item, context))
+                    .toList()),
+          ),
         ],
       ),
     );

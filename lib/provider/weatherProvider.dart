@@ -21,10 +21,16 @@ class WeatherProvider with ChangeNotifier {
   List<DailyWeather> hourlyWeather = [];
   List<DailyWeather> hourly24Weather = [];
   List<DailyWeather> sevenDayWeather = [];
+
   bool loading;
   bool isRequestError = false;
   bool isLocationError = false;
   bool loadingDrawer = false;
+  bool pressedDrawer = false;
+
+  bool isCelcius = true;
+  bool isMs = false;
+  bool isKmh = true;
 
   getWeatherData() async {
     loading = true;

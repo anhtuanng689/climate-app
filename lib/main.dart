@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/screens/SettingScreen.dart';
+import 'package:flutter_weather/screens/addCityScreen.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
           WeeklyScreen.routeName: (myCtx) => WeeklyScreen(),
           HourlyScreen.routeName: (myCtx) => HourlyScreen(),
           SettingScreen.routeName: (myCtx) => SettingScreen(),
+          AddCityScreen.routeName: (myCtx) => AddCityScreen(),
         },
       ),
     );

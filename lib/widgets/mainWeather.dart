@@ -91,9 +91,14 @@ class MainWeather extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MapString.mapStringToIcon(
-                  '${wData.weather.currently}', context, 90),
-              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(
+                  right: 30,
+                ),
+                child: MapString.mapStringToIcon(
+                    '${wData.weather.currently}', context, 90),
+              ),
+              SizedBox(height: 40),
               MapString.mapInputToWeather(
                   wData.weather.currently, context, 20, FontWeight.w600),
               // Text(

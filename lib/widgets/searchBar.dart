@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/models/city.dart';
+import 'package:flutter_weather/widgets/fadeInRolate.dart';
 import 'package:provider/provider.dart';
 import '../provider/weatherProvider.dart';
 
+import 'package:animations/animations.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-
-import 'fadeIn.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({Key key}) : super(key: key);
@@ -17,8 +17,6 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar> {
   final _textController = TextEditingController();
   bool _validate = false;
-  bool _pressedDrawer = false;
-  final kGoogleApiKey = "AIzaSyAhV4eqOviYbiuvrmpAvb0u1zJce1GoCng";
   GlobalKey<AutoCompleteTextFieldState<City>> key = new GlobalKey();
   bool loadingCities = true;
 
@@ -82,6 +80,7 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final weatherData = Provider.of<WeatherProvider>(context);
     // print('city loading: $loadingCities');
     // print('city list: $_citiesList');
     return Row(
@@ -106,8 +105,18 @@ class _SearchBarState extends State<SearchBar> {
           // ),
           child: loadingCities
               ? CircularProgressIndicator()
-              : FadeIn(
-                  delay: 0.01,
+              // : PageTransitionSwitcher(
+              //     duration: Duration(milliseconds: 500),
+              //     transitionBuilder: (Widget child, Animation<double> animation,
+              //         Animation<double> secondaryAnimation) {
+              //       return FadeThroughTransition(
+              //         child: child,
+              //         animation: animation,
+              //         secondaryAnimation: secondaryAnimation,
+              //       );
+              //     },
+              : FadeInRolate(
+                  delay: 0.0001,
                   child: AutoCompleteTextField<City>(
                     suggestions: _citiesList,
                     clearOnSubmit: true,
@@ -211,10 +220,10 @@ class _SearchBarState extends State<SearchBar> {
             icon: Icon(Icons.menu),
             onPressed: () async {
               Scaffold.of(context).openEndDrawer();
-              if (!_pressedDrawer) {
+              if (!weatherData.pressedDrawer) {
                 await Provider.of<WeatherProvider>(context, listen: false)
                     .getWeatherLocationEndDrawer();
-                _pressedDrawer = !_pressedDrawer;
+                weatherData.pressedDrawer = true;
               }
             },
           ),
