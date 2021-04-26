@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/database/DatabaseProvider.dart';
+import 'package:flutter_weather/models/city.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'dart:convert';
@@ -14,7 +16,7 @@ class WeatherProvider with ChangeNotifier {
   DailyWeather currentWeather = DailyWeather();
   Aqi aqi = Aqi();
 
-  List<String> cityList = ['Hanoi', 'Haiphong'];
+  List<String> cityList = [];
   List<String> cityList1 = ['Hanoi', 'Haiphong', 'Paris', 'Hue', 'Tokyo'];
 
   List<Weather> listWeather = [];
@@ -32,10 +34,27 @@ class WeatherProvider with ChangeNotifier {
   bool isMs = false;
   bool isKmh = true;
 
+  List<City> listCity = [];
+
+  loadCity() async {
+    print('loading city');
+    listCity.clear();
+    listCity = await DatabaseProvider.fetchCity();
+    print(listCity.length);
+    print(listCity.isNotEmpty);
+    print(listCity);
+    cityList.clear();
+    for (var city in listCity) {
+      cityList.add(city.cityName);
+      print(city.cityName);
+    }
+  }
+
   getWeatherData() async {
     loading = true;
     isRequestError = false;
     isLocationError = false;
+
     await Location().requestService().then((value) async {
       if (value) {
         final locData = await Location().getLocation();
@@ -193,15 +212,36 @@ class WeatherProvider with ChangeNotifier {
 
   getWeatherLocationEndDrawer() async {
     loadingDrawer = true;
+    print('cityList1: $cityList');
+    print('listWeather1: $listWeather');
+    cityList.clear();
+    listWeather.clear();
+    listCity.clear();
+
+    listCity = await DatabaseProvider.fetchCity();
+
+    print('listCity after fetch: $listCity');
+
+    for (var city in listCity) {
+      cityList.add(city.cityName);
+    }
+
+    // if (listWeather.isNotEmpty) {
+    //   listWeather.clear();
+    //   print('listWeather after clean: $listWeather');
+    // }
+
+    // await loadCity();
+    print('cityList: $cityList');
+    print('listWeather: $listWeather');
+
     for (var index in cityList) {
       Uri url = Uri.parse(
           'https://api.openweathermap.org/data/2.5/weather?q=$index&units=metric&appid=$apiKeyOpenWeatherMap');
       try {
-        print('index: $index');
         final response = await http.get(url);
         final extractedData =
             json.decode(response.body) as Map<String, dynamic>;
-        print('data: $extractedData');
         listWeather.add(Weather.fromJson(extractedData));
       } catch (error) {
         loadingDrawer = false;
@@ -209,6 +249,23 @@ class WeatherProvider with ChangeNotifier {
         throw error;
       }
     }
+
+    // if (listWeather.isEmpty) {
+    //   for (var index in cityList) {
+    //     Uri url = Uri.parse(
+    //         'https://api.openweathermap.org/data/2.5/weather?q=$index&units=metric&appid=$apiKeyOpenWeatherMap');
+    //     try {
+    //       final response = await http.get(url);
+    //       final extractedData =
+    //           json.decode(response.body) as Map<String, dynamic>;
+    //       listWeather.add(Weather.fromJson(extractedData));
+    //     } catch (error) {
+    //       loadingDrawer = false;
+    //       notifyListeners();
+    //       throw error;
+    //     }
+    //   }
+    // }
     loadingDrawer = false;
     notifyListeners();
   }

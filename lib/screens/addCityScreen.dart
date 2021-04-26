@@ -24,10 +24,14 @@ class _AddCityScreenState extends State<AddCityScreen> {
   List<City> _citiesList = [];
 
   void loadCities() async {
-    _citiesList = await DatabaseProvider.loadCities();
+    _citiesList = await DatabaseProvider.fetchWorldCities();
     setState(() {
       loadingCities = false;
     });
+  }
+
+  void addCity(City city) async {
+    await DatabaseProvider.addCity(city);
   }
 
   final TextStyle _style1 = TextStyle(
@@ -57,7 +61,7 @@ class _AddCityScreenState extends State<AddCityScreen> {
                 width: 10,
               ),
               Text(
-                city.city,
+                city.cityName,
                 style: _style1,
               ),
             ],
@@ -137,19 +141,20 @@ class _AddCityScreenState extends State<AddCityScreen> {
                       hintText: "Search city",
                     ),
                     itemFilter: (item, query) {
-                      return item.city
+                      return item.cityName
                           .toLowerCase()
                           .startsWith(query.toLowerCase());
                     },
                     itemSorter: (a, b) {
-                      return a.city.compareTo(b.city);
+                      return a.cityName.compareTo(b.cityName);
                     },
                     itemSubmitted: (item) {
                       setState(() {
-                        print(item.city);
-                        Provider.of<WeatherProvider>(context, listen: false)
-                            .cityList
-                            .add(item.city);
+                        print(item.cityName);
+                        // Provider.of<WeatherProvider>(context, listen: false)
+                        //     .cityList
+                        //     .add(item.cityName);
+                        addCity(item);
                         Provider.of<WeatherProvider>(context, listen: false)
                             .getWeatherLocationEndDrawer();
                         AwesomeDialog(
@@ -157,7 +162,7 @@ class _AddCityScreenState extends State<AddCityScreen> {
                           dialogType: DialogType.SUCCES,
                           animType: AnimType.SCALE,
                           body: Text(
-                            'Added ${item.city}',
+                            'Added ${item.cityName}',
                             style: _style1,
                           ),
                           btnOk: ElevatedButton(

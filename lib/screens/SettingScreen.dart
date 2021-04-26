@@ -53,6 +53,7 @@ class _SettingScreenState extends State<SettingScreen> {
             children: [
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,6 +82,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -109,6 +111,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -124,6 +127,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -144,6 +148,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -164,6 +169,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -179,6 +185,7 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
               Divider(color: Colors.black),
               Container(
+                height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -193,7 +200,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           onPressed: () async {
                             await Provider.of<NotificationService>(context,
                                     listen: false)
-                                .stylishNotification();
+                                .dailyNotification();
                           },
                           child: Text('Press')),
                     ]),

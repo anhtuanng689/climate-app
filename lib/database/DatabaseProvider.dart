@@ -10,7 +10,7 @@ class DatabaseProvider {
   static final DatabaseProvider dbProvider = DatabaseProvider._();
   static Database _database;
 
-  Future<Database> get database async {
+  static Future<Database> get database async {
     if (_database != null) {
       return _database;
     }
@@ -18,40 +18,107 @@ class DatabaseProvider {
     return _database;
   }
 
-  static initDB() async {
-    var dbDir = await getDatabasesPath();
-    var dbPath = join(dbDir, "citylist.db");
+  static Future<Database> initDB() async {
+    var databasesPath = await getDatabasesPath();
+    var path = join(databasesPath, "citylist.db");
 
-    await deleteDatabase(dbPath);
+// Check if the database exists
+    var exists = await databaseExists(path);
 
-    ByteData data = await rootBundle.load("assets/database/citylist.db");
-    List<int> bytes =
-        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    await File(dbPath).writeAsBytes(bytes);
-    return await openDatabase(dbPath);
+    if (!exists) {
+      // Should happen only the first time you launch your application
+      print("Creating new copy from asset");
+
+      // Make sure the parent directory exists
+      try {
+        await Directory(dirname(path)).create(recursive: true);
+      } catch (_) {}
+
+      // Copy from asset
+      ByteData data = await rootBundle.load(join("assets", "citylist.db"));
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+
+      // Write and flush the bytes written
+      await File(path).writeAsBytes(bytes, flush: true);
+    } else {
+      print("Opening existing database");
+    }
+// open the database
+    var databaseData = await openDatabase(path, readOnly: false);
+
+    return databaseData;
+
+//     var databasesPath = await getDatabasesPath();
+//     var path = join(databasesPath, "citylist.db");
+//
+// // Check if the database exists
+//     var exists = await databaseExists(path);
+//
+//     if (!exists) {
+//       // Should happen only the first time you launch your application
+//       print("Creating new copy from asset");
+//
+//       // Make sure the parent directory exists
+//       try {
+//         await Directory(dirname(path)).create(recursive: true);
+//       } catch (_) {}
+//
+//       // Copy from asset
+//       ByteData data = await rootBundle.load(join("assets", "citylist.db"));
+//       List<int> bytes =
+//           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+//
+//       // Write and flush the bytes written
+//       await File(path).writeAsBytes(bytes, flush: true);
+//     } else {
+//       print("Opening existing database");
+// open the database
+//     await openDatabase(path, readOnly: false);
   }
 
-  // Future<List<Logo>> getCategories() async {
-  //   Database database = await this.database;
-  //   var result = await database.query(
-  //     'logotable',
-  //     columns: ['categories', 'cat_id'],
-  //     distinct: true,
-  //   );
-  //
-  //   List<Logo> list =
-  //   result.isNotEmpty ? result.map((e) => Logo.fromMap(e)).toList() : [];
-  //   return list;
-  // }
+  static Future<List<City>> fetchWorldCities() async {
+    final database = await initDB();
 
-  static Future<List<City>> loadCities() async {
-    var database = await initDB();
     var result = await database.query("worldcities", columns: ['city']);
     List<City> list = result.isNotEmpty
         ? result.map<City>((e) => City.fromMap(e)).toList()
         : [];
-    print(list[0]);
-    print(list[0].city);
     return list;
+  }
+
+  static Future<List<City>> fetchCity() async {
+    final database = await initDB();
+    var result = await database.query("localcities");
+
+    return List.generate(result.length, (i) {
+      return City(
+        cityName: result[i]['city'],
+      );
+    });
+  }
+
+  static Future<int> addCity(City city) async {
+    final database = await initDB();
+    int result = await database.insert(
+      'localcities',
+      city.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print(result);
+    return result;
+  }
+
+  static Future<int> deleteCity(String cityName) async {
+    final database = await initDB();
+    int result = await database
+        .delete('localcities', where: 'city = ?', whereArgs: [cityName]);
+    print(result);
+    return result;
+  }
+
+  static Future<void> close() async {
+    final database = await initDB();
+    return database.close();
   }
 }

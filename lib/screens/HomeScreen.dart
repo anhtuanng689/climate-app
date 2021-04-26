@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/endDrawer.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,9 @@ import '../widgets/weatherDetail.dart';
 import '../widgets/sevenDayForecast.dart';
 import '../widgets/aqi.dart';
 
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
 class HomeScreen extends StatefulWidget {
   static const routeName = '/homeScreen';
   @override
@@ -31,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _getData();
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('America/Detroit'));
   }
 
   @override
@@ -62,8 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // print('is loading: $_isLoading');
     // print('wea loading: ${weatherData.loading}');
     // print('deny location: ${weatherData.isLocationError}');
-    print('list weather: ${weatherData.listWeather}');
-    print('list city: ${weatherData.cityList}');
+    // print('list weather: ${weatherData.listWeather}');
+    // print('list city: ${weatherData.cityList}');
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,

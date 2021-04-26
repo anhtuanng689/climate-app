@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 
 class City with ChangeNotifier {
-  String city;
-  String country;
+  String cityName;
 
-  City({this.city, this.country});
+  City({this.cityName});
 
   factory City.fromMap(Map<String, dynamic> json) => new City(
-        city: json["city"] as String,
-        country: json["country"] as String,
+        cityName: json["city"] as String,
       );
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      "city": cityName,
+    };
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/helper/utils.dart';
 import 'package:flutter_weather/models/weather.dart';
 import 'package:flutter_weather/provider/weatherProvider.dart';
@@ -33,13 +34,12 @@ class _EndDrawerState extends State<EndDrawer> {
     fontSize: 16,
   );
 
-  _onSelected(dynamic val) {
+  deleteCity(dynamic val) {
     setState(() => this.widget.cityList.removeWhere((data) => data == val));
   }
 
-  Future<void> _refreshListCity(BuildContext context) async {
-    await Provider.of<WeatherProvider>(context, listen: false)
-        .getWeatherLocationEndDrawer();
+  deleteDBCity(selectedValue) async {
+    await DatabaseProvider.deleteCity(selectedValue);
   }
 
   Widget _weatherLocationBuilder(dynamic weather, BuildContext context) {
@@ -79,14 +79,10 @@ class _EndDrawerState extends State<EndDrawer> {
                   SizedBox(
                     width: 5,
                   ),
-                  true
-                      ? Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.blue,
-                        )
-                      : SizedBox(
-                          width: 5,
-                        ),
+                  Icon(
+                    Icons.location_on_outlined,
+                    color: Colors.blue,
+                  ),
                   Spacer(),
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 0, 5, 10),
@@ -116,17 +112,17 @@ class _EndDrawerState extends State<EndDrawer> {
                       ),
                       onSelected: (selectedValue) {
                         setState(() {
-                          print(selectedValue);
-                          _onSelected(selectedValue);
+                          print('selectedValue: $selectedValue');
+                          deleteCity(selectedValue);
+                          deleteDBCity(selectedValue);
                           print(this.widget.cityList);
-                          _refreshListCity(context);
-                          // await Provider.of<WeatherProvider>(context,
-                          //         listen: false)
-                          //     .getWeatherLocationEndDrawer();
+                          Provider.of<WeatherProvider>(context, listen: false)
+                              .getWeatherLocationEndDrawer();
                         });
                       },
                       itemBuilder: (BuildContext ctx) => [
                         PopupMenuItem(
+                          key: UniqueKey(),
                           child: Text('Remove'),
                           value: weather.cityName,
                           textStyle: _style2,
@@ -146,7 +142,6 @@ class _EndDrawerState extends State<EndDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final weatherData = Provider.of<WeatherProvider>(context);
     return Drawer(
       child: Container(
         width: MediaQuery.of(context).size.width,

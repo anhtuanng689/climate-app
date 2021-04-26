@@ -1,4 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/screens/SettingScreen.dart';
 import 'package:flutter_weather/screens/addCityScreen.dart';
 import 'package:flutter_weather/services/notification.dart';
@@ -10,6 +13,12 @@ import './Screens/weeklyWeatherScreen.dart';
 import './Screens/homeScreen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  GestureBinding.instance.resamplingEnabled = true;
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   runApp(
     MyApp(),
   );

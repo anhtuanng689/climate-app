@@ -23,7 +23,7 @@ class _SearchBarState extends State<SearchBar> {
   List<City> _citiesList = [];
 
   void loadCities() async {
-    _citiesList = await DatabaseProvider.loadCities();
+    _citiesList = await DatabaseProvider.fetchWorldCities();
     setState(() {
       loadingCities = false;
     });
@@ -56,7 +56,7 @@ class _SearchBarState extends State<SearchBar> {
                 width: 10,
               ),
               Text(
-                city.city,
+                city.cityName,
                 style: _style1,
               ),
             ],
@@ -143,18 +143,18 @@ class _SearchBarState extends State<SearchBar> {
                       hintText: "Search city",
                     ),
                     itemFilter: (item, query) {
-                      return item.city
+                      return item.cityName
                           .toLowerCase()
                           .startsWith(query.toLowerCase());
                     },
                     itemSorter: (a, b) {
-                      return a.city.compareTo(b.city);
+                      return a.cityName.compareTo(b.cityName);
                     },
                     itemSubmitted: (item) {
                       setState(() {
-                        print(item.city);
+                        print(item.cityName);
                         Provider.of<WeatherProvider>(context, listen: false)
-                            .searchWeatherData(location: item.city);
+                            .searchWeatherData(location: item.cityName);
                       });
                     },
                     itemBuilder: (context, item) {
