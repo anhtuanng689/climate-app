@@ -77,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         endDrawer: EndDrawer(
           lWeather: weatherData.listWeather,
           cityList: weatherData.cityList,
+          wData: weatherData,
         ),
         body: _isLoading
             ? Center(
@@ -132,7 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                               FadeIn(
                                                 delay: 0.44,
                                                 child: HourlyForecast(
-                                                    weatherData.hourlyWeather),
+                                                    hourlyForecast: weatherData
+                                                        .hourlyWeather,
+                                                    wData: weatherData),
                                               ),
                                               FadeIn(
                                                 delay: 0.55,

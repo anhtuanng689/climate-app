@@ -21,6 +21,66 @@ class UvIndex {
   }
 }
 
+class Temperature {
+  static String getTemperature(dynamic temp, int choice) {
+    if (choice == 0) {
+      return '${temp.toInt()}°';
+    } else {
+      return '${(temp / 5 * 9 + 32).toInt()}°';
+    }
+  }
+
+  static String getTemperatureWithoutPoint(dynamic temp, int choice) {
+    if (choice == 0) {
+      return '${temp.toInt()}';
+    } else {
+      return '${(temp / 5 * 9 + 32).toInt()}';
+    }
+  }
+
+  static String getTemperatureCalUnit(dynamic temp, int choice) {
+    if (choice == 0) {
+      return '${temp.round()}°C';
+    } else {
+      return '${(temp / 5 * 9 + 32).round()}°F';
+    }
+  }
+}
+
+class WindSpeed {
+  static String getWindSpeedChoice(dynamic windSpeed, int choice) {
+    if (choice == 0) {
+      return '${(windSpeed / 3.6).toStringAsFixed(2)} m/s';
+    } else if (choice == 1) {
+      return '$windSpeed km/h';
+    } else {
+      return '${(windSpeed / 0.621371).toStringAsFixed(2)} mph';
+    }
+  }
+}
+
+class Distance {
+  static String getDistanceChoice(dynamic distance, int choice) {
+    if (choice == 0) {
+      return '$distance m';
+    } else if (choice == 1) {
+      return '${distance / 1000} km';
+    } else {
+      return '${(distance * 0.000621371192).toStringAsFixed(2)} mi';
+    }
+  }
+}
+
+class Pressure {
+  static String getPressureChoice(dynamic pressure, int choice) {
+    if (choice == 0) {
+      return '$pressure hPa';
+    } else {
+      return '${(pressure * 0.02953).toStringAsFixed(2)} inHg';
+    }
+  }
+}
+
 class AqiString {
   static Color colorFromHexss(String hexColor) {
     final hexCode = hexColor.replaceAll('#', '');

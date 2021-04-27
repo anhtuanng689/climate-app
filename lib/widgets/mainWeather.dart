@@ -61,7 +61,9 @@ class MainWeather extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${wData.weather.temp.toStringAsFixed(0)}°C',
+                        Temperature.getTemperatureCalUnit(
+                            wData.weather.temp, wData.tempChoice),
+                        // '${wData.weather.temp.toStringAsFixed(0)}°C',
                         style: TextStyle(
                           fontSize: 60,
                           fontWeight: FontWeight.w600,
@@ -71,15 +73,17 @@ class MainWeather extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.arrow_upward),
-                          Text('${wData.weather.tempMax.toStringAsFixed(0)}°'),
+                          Text(Temperature.getTemperature(
+                              wData.weather.tempMax, wData.tempChoice)),
                           SizedBox(width: 5),
                           Icon(Icons.arrow_downward),
-                          Text('${wData.weather.tempMin.toStringAsFixed(0)}°'),
+                          Text(Temperature.getTemperature(
+                              wData.weather.tempMin, wData.tempChoice)),
                         ],
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Feels like ${wData.weather.feelsLike.toStringAsFixed(0)}°',
+                        'Feels like ${Temperature.getTemperature(wData.weather.feelsLike, wData.tempChoice)}',
                         style: _style1.copyWith(fontSize: 18),
                       ),
                     ],

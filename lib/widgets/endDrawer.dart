@@ -12,9 +12,11 @@ import 'package:provider/provider.dart';
 import 'fadeIn.dart';
 
 class EndDrawer extends StatefulWidget {
+  final wData;
   final List<Weather> lWeather;
   final List<String> cityList;
-  EndDrawer({Key key, this.cityList, this.lWeather}) : super(key: key);
+  EndDrawer({Key key, this.cityList, this.lWeather, this.wData})
+      : super(key: key);
 
   @override
   _EndDrawerState createState() => _EndDrawerState();
@@ -42,7 +44,8 @@ class _EndDrawerState extends State<EndDrawer> {
     await DatabaseProvider.deleteCity(selectedValue);
   }
 
-  Widget _weatherLocationBuilder(dynamic weather, BuildContext context) {
+  Widget _weatherLocationBuilder(
+      dynamic weather, dynamic wData, BuildContext context) {
     return FadeIn(
       delay: 0.01,
       child: GestureDetector(
@@ -94,7 +97,8 @@ class _EndDrawerState extends State<EndDrawer> {
               Row(
                 children: [
                   Text(
-                    '${weather.temp.toStringAsFixed(0)}°C',
+                    Temperature.getTemperatureCalUnit(
+                        weather.temp, wData.tempChoice),
                     style: _style1.copyWith(fontSize: 38),
                   ),
                   Spacer(),
@@ -193,7 +197,8 @@ class _EndDrawerState extends State<EndDrawer> {
                 children: [
                   Column(
                     children: widget.lWeather
-                        .map((item) => _weatherLocationBuilder(item, context))
+                        .map((item) => _weatherLocationBuilder(
+                            item, widget.wData, context))
                         .toList(),
                   ),
                 ],

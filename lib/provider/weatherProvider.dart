@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/database/DatabaseProvider.dart';
+import 'package:flutter_weather/models/choice.dart';
 import 'package:flutter_weather/models/city.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
@@ -15,14 +16,15 @@ class WeatherProvider with ChangeNotifier {
   Weather weather = Weather();
   DailyWeather currentWeather = DailyWeather();
   Aqi aqi = Aqi();
+  Choice choice = Choice();
 
   List<String> cityList = [];
-  List<String> cityList1 = ['Hanoi', 'Haiphong', 'Paris', 'Hue', 'Tokyo'];
 
   List<Weather> listWeather = [];
   List<DailyWeather> hourlyWeather = [];
   List<DailyWeather> hourly24Weather = [];
   List<DailyWeather> sevenDayWeather = [];
+  List<City> listCity = [];
 
   bool loading;
   bool isRequestError = false;
@@ -30,11 +32,21 @@ class WeatherProvider with ChangeNotifier {
   bool loadingDrawer = false;
   bool pressedDrawer = false;
 
-  bool isCelcius = true;
-  bool isMs = false;
-  bool isKmh = true;
+  int tempChoice;
+  int windSpeedChoice;
+  int distanceChoice;
+  int pressureChoice;
 
-  List<City> listCity = [];
+  loadCalUnit() async {
+    choice = await DatabaseProvider.fetchChoice();
+    print(
+        'i${choice.id} t${choice.tempChoice} w${choice.windSpeedChoice} d${choice.distanceChoice} p${choice.pressureChoice} ');
+    tempChoice = choice.tempChoice;
+    windSpeedChoice = choice.windSpeedChoice;
+    distanceChoice = choice.distanceChoice;
+    pressureChoice = choice.pressureChoice;
+    notifyListeners();
+  }
 
   loadCity() async {
     print('loading city');
@@ -48,6 +60,7 @@ class WeatherProvider with ChangeNotifier {
       cityList.add(city.cityName);
       print(city.cityName);
     }
+    notifyListeners();
   }
 
   getWeatherData() async {
@@ -125,6 +138,8 @@ class WeatherProvider with ChangeNotifier {
           this.isRequestError = true;
           notifyListeners();
         }
+
+        loadCalUnit();
       } else {
         loading = false;
         isLocationError = true;
@@ -138,6 +153,7 @@ class WeatherProvider with ChangeNotifier {
     loading = true;
     isRequestError = false;
     isLocationError = false;
+
     Uri url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?q=$location&units=metric&appid=$apiKeyOpenWeatherMap');
     try {
@@ -249,24 +265,31 @@ class WeatherProvider with ChangeNotifier {
         throw error;
       }
     }
-
-    // if (listWeather.isEmpty) {
-    //   for (var index in cityList) {
-    //     Uri url = Uri.parse(
-    //         'https://api.openweathermap.org/data/2.5/weather?q=$index&units=metric&appid=$apiKeyOpenWeatherMap');
-    //     try {
-    //       final response = await http.get(url);
-    //       final extractedData =
-    //           json.decode(response.body) as Map<String, dynamic>;
-    //       listWeather.add(Weather.fromJson(extractedData));
-    //     } catch (error) {
-    //       loadingDrawer = false;
-    //       notifyListeners();
-    //       throw error;
-    //     }
-    //   }
-    // }
     loadingDrawer = false;
+    notifyListeners();
+  }
+
+  getTemperatureChoice(int index) {
+    tempChoice = index;
+    choice.tempChoice = index;
+    notifyListeners();
+  }
+
+  getWindSpeedChoice(int index) {
+    windSpeedChoice = index;
+    choice.windSpeedChoice = index;
+    notifyListeners();
+  }
+
+  getDistanceChoice(int index) {
+    distanceChoice = index;
+    choice.distanceChoice = index;
+    notifyListeners();
+  }
+
+  getPressureChoice(int index) {
+    pressureChoice = index;
+    choice.pressureChoice = index;
     notifyListeners();
   }
 }

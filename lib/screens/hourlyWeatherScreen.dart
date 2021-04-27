@@ -8,7 +8,7 @@ import '../provider/weatherProvider.dart';
 class HourlyScreen extends StatelessWidget {
   static const routeName = '/hourlyScreen';
 
-  Widget dailyWidget(dynamic weather, BuildContext context) {
+  Widget dailyWidget(dynamic weather, dynamic wData, BuildContext context) {
     final time = weather.date;
     final hours = DateFormat.Hm().format(time);
     return Container(
@@ -40,9 +40,9 @@ class HourlyScreen extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 15),
             child: MapString.mapStringToIcon(weather.condition, context, 25),
           ),
-          SizedBox(width: 20),
+          Spacer(),
           Text(
-            '${weather.dailyTemp.toStringAsFixed(0)}°',
+            Temperature.getTemperature(weather.dailyTemp, wData.tempChoice),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w400,
@@ -72,7 +72,7 @@ class HourlyScreen extends StatelessWidget {
           width: mediaQuery.size.width,
           child: ListView(
             children: weatherData.hourly24Weather
-                .map((item) => dailyWidget(item, context))
+                .map((item) => dailyWidget(item, weatherData, context))
                 .toList(),
           ),
         ),

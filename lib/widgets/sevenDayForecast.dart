@@ -96,7 +96,8 @@ class SevenDayForecast extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          '${wData.weather.temp.toStringAsFixed(0)}°C',
+                          Temperature.getTemperatureCalUnit(
+                              wData.weather.temp, wData.tempChoice),
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.w500,

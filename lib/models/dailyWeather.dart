@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 
 class DailyWeather with ChangeNotifier {
   var dailyTemp;
+  var tempMax;
+  var tempMin;
   var condition;
   var date;
   var precip;
@@ -9,6 +11,8 @@ class DailyWeather with ChangeNotifier {
 
   DailyWeather({
     this.dailyTemp,
+    this.tempMax,
+    this.tempMin,
     this.condition,
     this.date,
     this.precip,
@@ -27,7 +31,8 @@ class DailyWeather with ChangeNotifier {
 
   static DailyWeather fromDailyJson(dynamic json) {
     return DailyWeather(
-      dailyTemp: json['temp']['day'],
+      tempMax: json['temp']['max'],
+      tempMin: json['temp']['min'],
       condition: json['weather'][0]['main'],
       date: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000, isUtc: true),
     );

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
+import 'package:flutter_weather/models/choice.dart';
 import 'package:flutter_weather/models/city.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -120,5 +121,20 @@ class DatabaseProvider {
   static Future<void> close() async {
     final database = await initDB();
     return database.close();
+  }
+
+  static Future<Choice> fetchChoice() async {
+    final database = await initDB();
+    var result = await database.query("choices");
+
+    return result.isNotEmpty ? Choice.fromMap(result.first) : Null;
+  }
+
+  static Future<int> updateChoice(Choice choice) async {
+    final database = await initDB();
+    var result = await database
+        .update("choices", choice.toMap(), where: 'id = ?', whereArgs: [1]);
+    print(result);
+    return result;
   }
 }

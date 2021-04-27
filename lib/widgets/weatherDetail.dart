@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/helper/utils.dart';
 import 'package:flutter_weather_icons/flutter_weather_icons.dart';
 import 'package:intl/intl.dart';
 
@@ -90,18 +91,27 @@ class WeatherDetail extends StatelessWidget {
             children: [
               _gridWeatherBuilder('${wData.weather.humidity}%', 'Humidity',
                   WeatherIcons.wiRaindrop),
-              _gridWeatherBuilder('${wData.weather.windSpeed} km/h', 'Wind',
+              _gridWeatherBuilder(
+                  WindSpeed.getWindSpeedChoice(
+                      wData.weather.windSpeed, wData.windSpeedChoice),
+                  'Wind speed',
                   WeatherIcons.wiStrongWind),
-              _gridWeatherBuilder('${wData.weather.visibility / 1000} km',
-                  'Visibility', WeatherIcons.wiSmallCraftAdvisory),
-              _gridWeatherBuilder('${wData.weather.pressure} hPa', 'Pressure',
+              _gridWeatherBuilder(
+                  Distance.getDistanceChoice(
+                      wData.weather.visibility, wData.distanceChoice),
+                  'Visibility',
+                  WeatherIcons.wiSmallCraftAdvisory),
+              _gridWeatherBuilder(
+                  Pressure.getPressureChoice(
+                      wData.weather.pressure, wData.pressureChoice),
+                  'Pressure',
                   WeatherIcons.wiBarometer),
               _gridWeatherBuilder(
-                  '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunrise * 1000))}',
+                  '0${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunrise * 1000))}',
                   'Sunrise',
                   WeatherIcons.wiSunrise),
               _gridWeatherBuilder(
-                  '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunset * 1000))}',
+                  '0${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(wData.weather.sunset * 1000))}',
                   'Sunset',
                   WeatherIcons.wiSunset),
             ],

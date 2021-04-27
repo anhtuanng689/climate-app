@@ -8,7 +8,7 @@ import '../provider/weatherProvider.dart';
 class WeeklyScreen extends StatelessWidget {
   static const routeName = '/weeklyScreen';
 
-  Widget dailyWidget(dynamic weather, BuildContext context) {
+  Widget dailyWidget(dynamic weather, dynamic wData, BuildContext context) {
     final dayOfWeek = DateFormat('EEEEE').format(weather.date);
 
     return Container(
@@ -20,13 +20,17 @@ class WeeklyScreen extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                dayOfWeek ?? '',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
+              Container(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: Text(
+                  dayOfWeek ?? '',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
               Spacer(),
@@ -35,13 +39,25 @@ class WeeklyScreen extends StatelessWidget {
                 child:
                     MapString.mapStringToIcon(weather.condition, context, 25),
               ),
-              SizedBox(
-                width: 20,
-              ),
+              Spacer(),
               Text(
-                '${weather.dailyTemp.toStringAsFixed(0)}°',
+                Temperature.getTemperatureWithoutPoint(
+                    weather.tempMax, wData.tempChoice),
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text('/',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w400,
+                  )),
+              Text(
+                Temperature.getTemperatureWithoutPoint(
+                    weather.tempMin, wData.tempChoice),
+                style: TextStyle(
+                  fontSize: 17,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -73,7 +89,7 @@ class WeeklyScreen extends StatelessWidget {
           width: mediaQuery.size.width,
           child: Column(
             children: weatherData.sevenDayWeather
-                .map((item) => dailyWidget(item, context))
+                .map((item) => dailyWidget(item, weatherData, context))
                 .toList(),
           ),
         ),

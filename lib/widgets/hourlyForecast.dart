@@ -6,9 +6,10 @@ import '../Screens/hourlyWeatherScreen.dart';
 import '../models/dailyWeather.dart';
 
 class HourlyForecast extends StatelessWidget {
+  final wData;
   final List<DailyWeather> hourlyForecast;
 
-  HourlyForecast(this.hourlyForecast);
+  HourlyForecast({this.hourlyForecast, this.wData});
 
   Widget hourlyWidget(dynamic weather, BuildContext context) {
     final currentTime = weather.date;
@@ -53,7 +54,8 @@ class HourlyForecast extends StatelessWidget {
                 Container(
                   width: 80,
                   child: Text(
-                    "${weather.dailyTemp.toStringAsFixed(0)}°C",
+                    Temperature.getTemperature(
+                        weather.dailyTemp, wData.tempChoice),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,

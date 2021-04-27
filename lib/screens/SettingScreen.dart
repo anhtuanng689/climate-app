@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/helper/utils.dart';
+import 'package:flutter_weather/models/choice.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:provider/provider.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -25,10 +28,19 @@ class _SettingScreenState extends State<SettingScreen> {
     fontSize: 16,
   );
 
+  updateChoice(Choice choice) async {
+    await DatabaseProvider.updateChoice(choice);
+  }
+
   @override
   void initState() {
     super.initState();
     Provider.of<NotificationService>(context, listen: false).initilize();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -66,7 +78,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ToggleSwitch(
                       minWidth: 90.0,
                       minHeight: 35.0,
-                      initialLabelIndex: 0,
+                      initialLabelIndex: weatherData.tempChoice,
                       cornerRadius: 20.0,
                       activeFgColor: Colors.white,
                       inactiveBgColor: Colors.grey,
@@ -75,6 +87,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       activeBgColors: [Colors.blue, Colors.pink],
                       onToggle: (index) {
                         print('switched to: $index');
+                        print('temp choice from: ${weatherData.tempChoice}');
+                        weatherData.getTemperatureChoice(index);
+                        updateChoice(weatherData.choice);
                       },
                     ),
                   ],
@@ -95,7 +110,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ToggleSwitch(
                       minWidth: 60,
                       minHeight: 35.0,
-                      initialLabelIndex: 1,
+                      initialLabelIndex: weatherData.windSpeedChoice,
                       cornerRadius: 20.0,
                       activeFgColor: Colors.white,
                       inactiveBgColor: Colors.grey,
@@ -104,6 +119,76 @@ class _SettingScreenState extends State<SettingScreen> {
                       activeBgColors: [Colors.blue, Colors.pink, Colors.purple],
                       onToggle: (index) {
                         print('switched to: $index');
+                        print(
+                            'temp choice from: ${weatherData.windSpeedChoice}');
+                        weatherData.getWindSpeedChoice(index);
+                        updateChoice(weatherData.choice);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.black),
+              Container(
+                height: mediaQuery.size.height * 0.085,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Distance',
+                      style: _style1,
+                    ),
+                    Spacer(),
+                    ToggleSwitch(
+                      minWidth: 60,
+                      minHeight: 35.0,
+                      initialLabelIndex: weatherData.distanceChoice,
+                      cornerRadius: 20.0,
+                      activeFgColor: Colors.white,
+                      inactiveBgColor: Colors.grey,
+                      inactiveFgColor: Colors.white,
+                      labels: ['m', 'km', 'mi'],
+                      activeBgColors: [Colors.blue, Colors.pink, Colors.purple],
+                      onToggle: (index) {
+                        print('switched to: $index');
+                        print(
+                            'distance choice from: ${weatherData.distanceChoice}');
+                        weatherData.getDistanceChoice(index);
+                        updateChoice(weatherData.choice);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.black),
+              Container(
+                height: mediaQuery.size.height * 0.085,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Pressure',
+                      style: _style1,
+                    ),
+                    Spacer(),
+                    ToggleSwitch(
+                      minWidth: 90.0,
+                      minHeight: 35.0,
+                      initialLabelIndex: weatherData.pressureChoice,
+                      cornerRadius: 20.0,
+                      activeFgColor: Colors.white,
+                      inactiveBgColor: Colors.grey,
+                      inactiveFgColor: Colors.white,
+                      labels: ['hPa', 'inHg'],
+                      activeBgColors: [Colors.blue, Colors.pink],
+                      onToggle: (index) {
+                        print('switched to: $index');
+                        print(
+                            'pressure choice from: ${weatherData.pressureChoice}');
+                        weatherData.getPressureChoice(index);
+                        updateChoice(weatherData.choice);
                       },
                     ),
                   ],
@@ -114,23 +199,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(children: [
-                      Text(
-                        'Get widgets in homescreen',
-                        style: _style1,
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-              Divider(color: Colors.black),
-              Container(
-                height: mediaQuery.size.height * 0.085,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(children: [
                       Text(
@@ -139,7 +208,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       Spacer(),
                       Text(
-                        'One Call API',
+                        'Open Weather Map',
                         style: _style2.copyWith(color: Colors.grey),
                       ),
                     ]),
@@ -151,7 +220,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(children: [
                       Text(
@@ -172,7 +241,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(children: [
                       Text(
@@ -188,7 +257,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: mediaQuery.size.height * 0.085,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(children: [
                       Text(
