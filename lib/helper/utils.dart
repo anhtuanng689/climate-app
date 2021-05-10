@@ -134,6 +134,22 @@ class AqiString {
       return 'Continue outdoor activities normally';
     }
   }
+
+  static String getAqiUserRecommend(int aqi) {
+    if (aqi > 300) {
+      return 'You should stay indoors and avoid physical exertion';
+    } else if (aqi > 200) {
+      return 'You should stay indoors and avoid outdoor activities';
+    } else if (aqi > 150) {
+      return 'You should avoid sustained and high-intensity outdoor exercises';
+    } else if (aqi > 100) {
+      return 'You should reduce sustained and high-intensity outdoor exercises';
+    } else if (aqi > 50) {
+      return 'You should reduce outdoor activities a bit';
+    } else {
+      return 'You should continue outdoor activities normally';
+    }
+  }
 }
 
 class MapString {

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/database/DatabaseProvider.dart';
+import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/endDrawer.dart';
+import 'package:flutter_weather/widgets/internetError.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import 'package:connectivity/connectivity.dart';
 
 import '../provider/weatherProvider.dart';
 import '../widgets/WeatherInfo.dart';
@@ -45,9 +49,28 @@ class _HomeScreenState extends State<HomeScreen> {
     _pageController.dispose();
   }
 
+  Future<void> checkInternet() async {
+    Provider.of<ConnectivityChangeNotifier>(context, listen: false)
+        .initialLoad();
+  }
+
   Future<void> _getData() async {
     _isLoading = true;
     print('getting...');
+    // checkInternet();
+    // if (Provider.of<ConnectivityChangeNotifier>(context, listen: false)
+    //         .connectivity ==
+    //     ConnectivityResult.none) {
+    //   _isLoading = false;
+    //   Navigator.pushReplacementNamed(context, InternetError().toStringShort());
+    //   return;
+    // } else {
+    //   final weatherData = Provider.of<WeatherProvider>(context, listen: false);
+    //   weatherData.getWeatherData();
+    //   print('getting done');
+    //   _isLoading = false;
+    // }
+
     final weatherData = Provider.of<WeatherProvider>(context, listen: false);
     weatherData.getWeatherData();
     print('getting done');
@@ -63,11 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final weatherData = Provider.of<WeatherProvider>(context);
     final myContext = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final notification = Provider.of<NotificationService>(context);
 
-    // print('is loading: $_isLoading');
-    // print('wea loading: ${weatherData.loading}');
-    // print('deny location: ${weatherData.isLocationError}');
+    print('is loading: $_isLoading');
+    print('wea loading: ${weatherData.loading}');
+    print('deny location: ${weatherData.isLocationError}');
     // print('list weather: ${weatherData.listWeather}');
     // print('list city: ${weatherData.cityList}');
     return SafeArea(
@@ -123,7 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                               FadeIn(
                                                   delay: 0,
                                                   child: MainWeather(
-                                                      wData: weatherData)),
+                                                    wData: weatherData,
+                                                    weatherData: weatherData
+                                                        .sevenDayWeather,
+                                                  )),
                                               FadeIn(
                                                 delay: 0.33,
                                                 child: WeatherInfo(

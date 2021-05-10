@@ -23,74 +23,51 @@ class DatabaseProvider {
     var databasesPath = await getDatabasesPath();
     var path = join(databasesPath, "citylist.db");
 
-// Check if the database exists
     var exists = await databaseExists(path);
 
     if (!exists) {
-      // Should happen only the first time you launch your application
       print("Creating new copy from asset");
 
-      // Make sure the parent directory exists
       try {
         await Directory(dirname(path)).create(recursive: true);
       } catch (_) {}
 
-      // Copy from asset
       ByteData data = await rootBundle.load(join("assets", "citylist.db"));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
-      // Write and flush the bytes written
       await File(path).writeAsBytes(bytes, flush: true);
     } else {
       print("Opening existing database");
     }
-// open the database
     var databaseData = await openDatabase(path, readOnly: false);
 
     return databaseData;
+  }
 
-//     var databasesPath = await getDatabasesPath();
-//     var path = join(databasesPath, "citylist.db");
-//
-// // Check if the database exists
-//     var exists = await databaseExists(path);
-//
-//     if (!exists) {
-//       // Should happen only the first time you launch your application
-//       print("Creating new copy from asset");
-//
-//       // Make sure the parent directory exists
-//       try {
-//         await Directory(dirname(path)).create(recursive: true);
-//       } catch (_) {}
-//
-//       // Copy from asset
-//       ByteData data = await rootBundle.load(join("assets", "citylist.db"));
-//       List<int> bytes =
-//           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-//
-//       // Write and flush the bytes written
-//       await File(path).writeAsBytes(bytes, flush: true);
-//     } else {
-//       print("Opening existing database");
-// open the database
-//     await openDatabase(path, readOnly: false);
+  static Future<void> close() async {
+    final db = await initDB();
+    // final db = await database;
+    return db.close();
   }
 
   static Future<List<City>> fetchWorldCities() async {
-    final database = await initDB();
+    final db = await initDB();
+    // final db = await database;
 
-    var result = await database.query("worldcities", columns: ['city']);
+    var result = await db.query("worldcities", columns: ['city']);
     List<City> list = result.isNotEmpty
         ? result.map<City>((e) => City.fromMap(e)).toList()
         : [];
+
     return list;
   }
 
   static Future<List<City>> fetchCity() async {
-    final database = await initDB();
-    var result = await database.query("localcities");
+    final db = await initDB();
+    // final db = await database;
+
+    var result = await db.query("localcities");
 
     return List.generate(result.length, (i) {
       return City(
@@ -100,41 +77,44 @@ class DatabaseProvider {
   }
 
   static Future<int> addCity(City city) async {
-    final database = await initDB();
-    int result = await database.insert(
+    final db = await initDB();
+    // final db = await database;
+
+    int result = await db.insert(
       'localcities',
       city.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print(result);
+
     return result;
   }
 
   static Future<int> deleteCity(String cityName) async {
-    final database = await initDB();
-    int result = await database
+    final db = await initDB();
+    // inal db = await database;
+
+    int result = await db
         .delete('localcities', where: 'city = ?', whereArgs: [cityName]);
-    print(result);
+
     return result;
   }
 
-  static Future<void> close() async {
-    final database = await initDB();
-    return database.close();
-  }
-
   static Future<Choice> fetchChoice() async {
-    final database = await initDB();
-    var result = await database.query("choices");
+    final db = await initDB();
+    // final db = await database;
+
+    var result = await db.query("choices");
 
     return result.isNotEmpty ? Choice.fromMap(result.first) : Null;
   }
 
   static Future<int> updateChoice(Choice choice) async {
-    final database = await initDB();
-    var result = await database
+    final db = await initDB();
+    // final db = await database;
+
+    var result = await db
         .update("choices", choice.toMap(), where: 'id = ?', whereArgs: [1]);
-    print(result);
+
     return result;
   }
 }
