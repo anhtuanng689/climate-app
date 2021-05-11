@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/screens/SettingScreen.dart';
 import 'package:flutter_weather/screens/addCityScreen.dart';
-import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:provider/provider.dart';
 
@@ -34,16 +34,6 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => NotificationService(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) {
-            ConnectivityChangeNotifier changeNotifier =
-                ConnectivityChangeNotifier();
-            //Inital load is an async function, can use FutureBuilder to show loading
-            //screen while this function running. This is not covered in this tutorial
-            changeNotifier.initialLoad();
-            return changeNotifier;
-          },
         ),
       ],
       child: MaterialApp(

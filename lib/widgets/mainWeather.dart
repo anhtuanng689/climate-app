@@ -5,9 +5,8 @@ import '../helper/utils.dart';
 
 class MainWeather extends StatelessWidget {
   final wData;
-  final weatherData;
 
-  MainWeather({this.wData, this.weatherData});
+  MainWeather({this.wData});
 
   final TextStyle _style1 = TextStyle(
     fontWeight: FontWeight.w700,
@@ -75,11 +74,11 @@ class MainWeather extends StatelessWidget {
                         children: [
                           Icon(Icons.arrow_upward),
                           Text(Temperature.getTemperature(
-                              weatherData[0].tempMax, wData.tempChoice)),
+                              wData.weather.tempMax, wData.tempChoice)),
                           SizedBox(width: 5),
                           Icon(Icons.arrow_downward),
                           Text(Temperature.getTemperature(
-                              weatherData[0].tempMin, wData.tempChoice)),
+                              wData.weather.tempMin, wData.tempChoice)),
                         ],
                       ),
                       SizedBox(height: 10),
@@ -98,7 +97,7 @@ class MainWeather extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  right: 0,
+                  right: 30,
                 ),
                 child: MapString.mapStringToIcon(
                     '${wData.weather.currently}', context, 90),

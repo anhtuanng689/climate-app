@@ -63,9 +63,9 @@ class WeatherInfo extends StatelessWidget {
           ],
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 2.3,
+            SizedBox(
               child: _weatherInfoBuilder(
                 'Precipitation',
                 '${wData.precip}%',
@@ -74,9 +74,12 @@ class WeatherInfo extends StatelessWidget {
                 50,
               ),
             ),
-            Spacer(),
-            Container(
-              width: MediaQuery.of(context).size.width / 2.3,
+            VerticalDivider(
+              color: Colors.black,
+              indent: 25,
+              endIndent: 25,
+            ),
+            SizedBox(
               child: _weatherInfoBuilder(
                 'UV Index',
                 UvIndex.mapUviValueToString(uvi: wData.uvi),
