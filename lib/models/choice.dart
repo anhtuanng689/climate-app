@@ -6,13 +6,15 @@ class Choice with ChangeNotifier {
   int windSpeedChoice;
   int distanceChoice;
   int pressureChoice;
+  int notificationChoice;
 
   Choice(
       {this.id,
       this.tempChoice,
       this.windSpeedChoice,
       this.distanceChoice,
-      this.pressureChoice});
+      this.pressureChoice,
+      this.notificationChoice});
 
   factory Choice.fromMap(Map<String, dynamic> json) => new Choice(
         id: json["id"],
@@ -20,6 +22,7 @@ class Choice with ChangeNotifier {
         windSpeedChoice: json["windspeed"],
         distanceChoice: json["distance"],
         pressureChoice: json["pressure"],
+        notificationChoice: json["notification"],
       );
 
   Map<String, dynamic> toMap() {
@@ -28,7 +31,8 @@ class Choice with ChangeNotifier {
       "temperature": tempChoice,
       "windspeed": windSpeedChoice,
       "distance": distanceChoice,
-      "pressure": pressureChoice
+      "pressure": pressureChoice,
+      "notification": notificationChoice,
     };
   }
 }

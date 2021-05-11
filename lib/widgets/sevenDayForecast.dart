@@ -15,7 +15,7 @@ class SevenDayForecast extends StatelessWidget {
   Widget dailyWidget(dynamic weather, BuildContext context) {
     final dayOfWeek = DateFormat('EEE').format(weather.date);
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 7),
+      margin: EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         children: [
           FittedBox(
@@ -63,7 +63,7 @@ class SevenDayForecast extends StatelessWidget {
             height: MediaQuery.of(context).size.height / 3.5,
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.all(15),
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Colors.white,

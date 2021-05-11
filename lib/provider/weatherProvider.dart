@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/models/choice.dart';
 import 'package:flutter_weather/models/city.dart';
+import 'package:flutter_weather/services/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'dart:convert';
@@ -17,6 +18,8 @@ class WeatherProvider with ChangeNotifier {
   DailyWeather currentWeather = DailyWeather();
   Aqi aqi = Aqi();
   Choice choice = Choice();
+
+  LocationService locationService = LocationService();
 
   List<String> cityList = [];
 
@@ -36,15 +39,17 @@ class WeatherProvider with ChangeNotifier {
   int windSpeedChoice;
   int distanceChoice;
   int pressureChoice;
+  int notificationChoice;
 
   loadCalUnit() async {
     choice = await DatabaseProvider.fetchChoice();
     print(
-        'i${choice.id} t${choice.tempChoice} w${choice.windSpeedChoice} d${choice.distanceChoice} p${choice.pressureChoice} ');
+        'i${choice.id} t${choice.tempChoice} w${choice.windSpeedChoice} d${choice.distanceChoice} p${choice.pressureChoice} n${choice.notificationChoice}');
     tempChoice = choice.tempChoice;
     windSpeedChoice = choice.windSpeedChoice;
     distanceChoice = choice.distanceChoice;
     pressureChoice = choice.pressureChoice;
+    notificationChoice = choice.notificationChoice;
     notifyListeners();
   }
 
@@ -65,88 +70,169 @@ class WeatherProvider with ChangeNotifier {
 
   getWeatherData() async {
     loading = true;
-    isRequestError = false;
-    isLocationError = false;
+    // isRequestError = false;
+    // isLocationError = false;
 
-    await Location().requestService().then((value) async {
-      if (value) {
-        final locData = await Location().getLocation();
-        var latitude = locData.latitude;
-        var longitude = locData.longitude;
-        Uri url = Uri.parse(
-            'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKeyOpenWeatherMap');
-        Uri dailyUrl = Uri.parse(
-            'https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely,current&appid=$apiKeyOpenWeatherMap');
-        Uri aqiUrl = Uri.parse(
-            'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
-        try {
-          final response = await http.get(url);
-          final extractedData =
-              json.decode(response.body) as Map<String, dynamic>;
-          weather = Weather.fromJson(extractedData);
-        } catch (error) {
-          loading = false;
-          this.isRequestError = true;
-          notifyListeners();
-        }
-        try {
-          final response = await http.get(dailyUrl);
-          final dailyData = json.decode(response.body) as Map<String, dynamic>;
-          currentWeather = DailyWeather.fromJson(dailyData);
-          var tempHourly = [];
-          var temp24Hour = [];
-          var tempSevenDay = [];
-          List items = dailyData['daily'];
-          List itemsHourly = dailyData['hourly'];
-          tempHourly = itemsHourly
-              .map((item) => DailyWeather.fromHourlyJson(item))
-              .toList()
-              .skip(1)
-              .take(3)
-              .toList();
-          temp24Hour = itemsHourly
-              .map((item) => DailyWeather.fromHourlyJson(item))
-              .toList()
-              .skip(1)
-              .take(24)
-              .toList();
-          tempSevenDay = items
-              .map((item) => DailyWeather.fromDailyJson(item))
-              .toList()
-              .skip(1)
-              .take(7)
-              .toList();
-          hourlyWeather = tempHourly;
-          hourly24Weather = temp24Hour;
-          sevenDayWeather = tempSevenDay;
-          notifyListeners();
-        } catch (error) {
-          loading = false;
-          this.isRequestError = true;
-          notifyListeners();
-          throw error;
-        }
-        try {
-          final response = await http.get(aqiUrl);
-          final extractedData =
-              json.decode(response.body) as Map<String, dynamic>;
-          aqi = Aqi.fromJson(extractedData);
-          loading = false;
-          notifyListeners();
-        } catch (error) {
-          loading = false;
-          this.isRequestError = true;
-          notifyListeners();
-        }
+    // bool checkPermission = await Location().requestService();
+    // print(checkPermission);
 
-        loadCalUnit();
-      } else {
+    final locData = await locationService.getLoc();
+
+    print("locData: $locData");
+
+    if (locData == null) {
+      loading = false;
+      isLocationError = true;
+      notifyListeners();
+    } else {
+      var latitude = locData.latitude;
+      var longitude = locData.longitude;
+      Uri url = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKeyOpenWeatherMap');
+      Uri dailyUrl = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely,current&appid=$apiKeyOpenWeatherMap');
+      Uri aqiUrl = Uri.parse(
+          'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
+      try {
+        final response = await http.get(url);
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
+        weather = Weather.fromJson(extractedData);
+      } catch (error) {
         loading = false;
-        isLocationError = true;
-        print('loi location');
+        this.isRequestError = true;
         notifyListeners();
       }
-    });
+      try {
+        final response = await http.get(dailyUrl);
+        final dailyData = json.decode(response.body) as Map<String, dynamic>;
+        currentWeather = DailyWeather.fromJson(dailyData);
+        var tempHourly = [];
+        var temp24Hour = [];
+        var tempSevenDay = [];
+        List items = dailyData['daily'];
+        List itemsHourly = dailyData['hourly'];
+        tempHourly = itemsHourly
+            .map((item) => DailyWeather.fromHourlyJson(item))
+            .toList()
+            .skip(1)
+            .take(3)
+            .toList();
+        temp24Hour = itemsHourly
+            .map((item) => DailyWeather.fromHourlyJson(item))
+            .toList()
+            .skip(1)
+            .take(24)
+            .toList();
+        tempSevenDay = items
+            .map((item) => DailyWeather.fromDailyJson(item))
+            .toList()
+            .skip(1)
+            .take(7)
+            .toList();
+        hourlyWeather = tempHourly;
+        hourly24Weather = temp24Hour;
+        sevenDayWeather = tempSevenDay;
+      } catch (error) {
+        loading = false;
+        this.isRequestError = true;
+        notifyListeners();
+        throw error;
+      }
+      try {
+        final response = await http.get(aqiUrl);
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
+        aqi = Aqi.fromJson(extractedData);
+        loading = false;
+      } catch (error) {
+        loading = false;
+        this.isRequestError = true;
+        notifyListeners();
+      }
+      loadCalUnit();
+      notifyListeners();
+    }
+
+    // await Location().requestService().then((value) async {
+    //   if (value) {
+    //     final locData = await Location().getLocation();
+    //     var latitude = locData.latitude;
+    //     var longitude = locData.longitude;
+    //     Uri url = Uri.parse(
+    //         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKeyOpenWeatherMap');
+    //     Uri dailyUrl = Uri.parse(
+    //         'https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely,current&appid=$apiKeyOpenWeatherMap');
+    //     Uri aqiUrl = Uri.parse(
+    //         'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
+    //     try {
+    //       final response = await http.get(url);
+    //       final extractedData =
+    //           json.decode(response.body) as Map<String, dynamic>;
+    //       weather = Weather.fromJson(extractedData);
+    //     } catch (error) {
+    //       loading = false;
+    //       this.isRequestError = true;
+    //       notifyListeners();
+    //     }
+    //     try {
+    //       final response = await http.get(dailyUrl);
+    //       final dailyData = json.decode(response.body) as Map<String, dynamic>;
+    //       currentWeather = DailyWeather.fromJson(dailyData);
+    //       var tempHourly = [];
+    //       var temp24Hour = [];
+    //       var tempSevenDay = [];
+    //       List items = dailyData['daily'];
+    //       List itemsHourly = dailyData['hourly'];
+    //       tempHourly = itemsHourly
+    //           .map((item) => DailyWeather.fromHourlyJson(item))
+    //           .toList()
+    //           .skip(1)
+    //           .take(3)
+    //           .toList();
+    //       temp24Hour = itemsHourly
+    //           .map((item) => DailyWeather.fromHourlyJson(item))
+    //           .toList()
+    //           .skip(1)
+    //           .take(24)
+    //           .toList();
+    //       tempSevenDay = items
+    //           .map((item) => DailyWeather.fromDailyJson(item))
+    //           .toList()
+    //           .skip(1)
+    //           .take(7)
+    //           .toList();
+    //       hourlyWeather = tempHourly;
+    //       hourly24Weather = temp24Hour;
+    //       sevenDayWeather = tempSevenDay;
+    //       notifyListeners();
+    //     } catch (error) {
+    //       loading = false;
+    //       this.isRequestError = true;
+    //       notifyListeners();
+    //       throw error;
+    //     }
+    //     try {
+    //       final response = await http.get(aqiUrl);
+    //       final extractedData =
+    //           json.decode(response.body) as Map<String, dynamic>;
+    //       aqi = Aqi.fromJson(extractedData);
+    //       loading = false;
+    //       notifyListeners();
+    //     } catch (error) {
+    //       loading = false;
+    //       this.isRequestError = true;
+    //       notifyListeners();
+    //     }
+    //
+    //     loadCalUnit();
+    //   } else {
+    //     loading = false;
+    //     isLocationError = true;
+    //     print('loi location');
+    //     notifyListeners();
+    //   }
+    // });
   }
 
   searchWeatherData({String location}) async {
@@ -290,6 +376,13 @@ class WeatherProvider with ChangeNotifier {
   getPressureChoice(int index) {
     pressureChoice = index;
     choice.pressureChoice = index;
+    notifyListeners();
+  }
+
+  getNotificationChoice(int index) {
+    notificationChoice = index;
+    print(notificationChoice);
+    choice.notificationChoice = index;
     notifyListeners();
   }
 }
