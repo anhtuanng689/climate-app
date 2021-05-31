@@ -20,11 +20,8 @@ class DailyWeather with ChangeNotifier {
   });
 
   factory DailyWeather.fromJson(Map<String, dynamic> json) {
-    final precipData = json['daily'][0]['pop'];
-    final calcPrecip = precipData * 100;
-    final precipitation = calcPrecip.toStringAsFixed(0);
     return DailyWeather(
-      precip: precipitation,
+      precip: json['daily'][0]['pop'],
       uvi: json['daily'][0]['uvi'],
     );
   }
@@ -34,6 +31,7 @@ class DailyWeather with ChangeNotifier {
       tempMax: json['temp']['max'],
       tempMin: json['temp']['min'],
       condition: json['weather'][0]['main'],
+      precip: json['pop'],
       date: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000, isUtc: true),
     );
   }
@@ -42,6 +40,7 @@ class DailyWeather with ChangeNotifier {
     return DailyWeather(
       dailyTemp: json['temp'],
       condition: json['weather'][0]['main'],
+      precip: json['pop'],
       date: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
     );
   }

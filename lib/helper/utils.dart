@@ -64,7 +64,7 @@ class Distance {
     if (choice == 0) {
       return '$distance m';
     } else if (choice == 1) {
-      return '${distance / 1000} km';
+      return '${(distance / 1000).toStringAsFixed(0)} km';
     } else {
       return '${(distance * 0.000621371192).toStringAsFixed(2)} mi';
     }

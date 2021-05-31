@@ -74,49 +74,47 @@ class HourlyForecast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15),
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+          child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: Text(
-                  'Next 3 Hours',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
+              Text(
+                'Next 3 Hours',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+              Spacer(),
               TextButton(
-                child: Text(
-                  'See More',
-                  style: TextStyle(color: Colors.blue),
-                ),
                 onPressed: () {
                   Navigator.of(context).pushNamed(HourlyScreen.routeName);
                 },
+                child: Text(
+                  'See more',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4dabd5)),
+                ),
               ),
             ],
           ),
-          SizedBox(height: 5),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushNamed(HourlyScreen.routeName);
-            },
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: hourlyForecast
-                    .map((item) => hourlyWidget(item, context))
-                    .toList()),
-          ),
-        ],
-      ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(HourlyScreen.routeName);
+          },
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: hourlyForecast
+                  .map((item) => hourlyWidget(item, context))
+                  .toList()),
+        ),
+      ],
     );
   }
 }

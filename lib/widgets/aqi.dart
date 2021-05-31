@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/models/aqi.dart';
+import 'package:flutter_weather/screens/addCityScreen.dart';
+import 'package:flutter_weather/screens/aqiScreen.dart';
 import 'package:intl/intl.dart';
 import '../helper/utils.dart';
 import '../widgets/progressBar.dart';
@@ -26,13 +28,30 @@ class Aqi extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 25, left: 20),
-          child: Text(
-            'Air Quality',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
+          padding: const EdgeInsets.only(top: 25, left: 20, right: 20),
+          child: Row(
+            children: [
+              Text(
+                'Air Quality',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Spacer(),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AqiScreen.routeName);
+                },
+                child: Text(
+                  'See more',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4dabd5)),
+                ),
+              ),
+            ],
           ),
         ),
         Container(
@@ -52,99 +71,105 @@ class Aqi extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    child: Center(
-                      child: Text(
-                        '${wData.aqi}',
-                        style: TextStyle(
-                          fontSize: 43,
-                          color: AqiString.colorFromHexss(
-                              AqiString.getAqiColor(wData.aqi)),
+          child: GestureDetector(
+            onTap: () {
+              print('clicked');
+              Navigator.pushNamed(context, AqiScreen.routeName);
+            },
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      child: Center(
+                        child: Text(
+                          '${wData.aqi}',
+                          style: TextStyle(
+                            fontSize: 43,
+                            color: AqiString.colorFromHexss(
+                                AqiString.getAqiColor(wData.aqi)),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AqiString.getAqiLevel(wData.aqi),
-                          style: _style1.copyWith(fontSize: 23),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          AqiString.getAqiRecommend(wData.aqi),
-                          style: _style2.copyWith(fontSize: 16),
-                        ),
-                      ],
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AqiString.getAqiLevel(wData.aqi),
+                            style: _style1.copyWith(fontSize: 23),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            AqiString.getAqiRecommend(wData.aqi),
+                            style: _style2.copyWith(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              DetailProgressBar(
-                width: MediaQuery.of(context).size.width * 0.75,
-                height: 20,
-                radius: 0,
-                assetsLimit: 500,
-                assets: [
-                  MyAssets(size: 50, num: 0),
-                  MyAssets(size: 50, num: 50),
-                  MyAssets(size: 50, num: 100),
-                  MyAssets(size: 50, num: 150),
-                  MyAssets(size: 100, num: 200),
-                  MyAssets(size: 100, num: 300),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              MyAssetsBar(
-                width: MediaQuery.of(context).size.width * 0.75,
-                height: 10,
-                background: colorFromHex("CFD8DC"),
-                radius: 0,
-                assetsLimit: 500,
-                assets: [
-                  MyAsset(size: 50, color: colorFromHex("00e300")),
-                  MyAsset(size: 50, color: colorFromHex("e5d335")),
-                  MyAsset(size: 50, color: colorFromHex("fe7c00")),
-                  MyAsset(size: 50, color: colorFromHex("fe0000")),
-                  MyAsset(size: 100, color: colorFromHex("98004b")),
-                  MyAsset(size: 200, color: colorFromHex("7d0022")),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Excellent',
-                    style: _style2.copyWith(
-                        color: Colors.grey.shade500, fontSize: 13),
-                  ),
-                  Text(
-                    'Severe',
-                    style: _style2.copyWith(
-                        color: Colors.grey.shade500, fontSize: 13),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                DetailProgressBar(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: 20,
+                  radius: 0,
+                  assetsLimit: 500,
+                  assets: [
+                    MyAssets(size: 50, num: 0),
+                    MyAssets(size: 50, num: 50),
+                    MyAssets(size: 50, num: 100),
+                    MyAssets(size: 50, num: 150),
+                    MyAssets(size: 100, num: 200),
+                    MyAssets(size: 100, num: 300),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                MyAssetsBar(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: 10,
+                  background: colorFromHex("CFD8DC"),
+                  radius: 0,
+                  assetsLimit: 500,
+                  assets: [
+                    MyAsset(size: 50, color: colorFromHex("00e300")),
+                    MyAsset(size: 50, color: colorFromHex("e5d335")),
+                    MyAsset(size: 50, color: colorFromHex("fe7c00")),
+                    MyAsset(size: 50, color: colorFromHex("fe0000")),
+                    MyAsset(size: 100, color: colorFromHex("98004b")),
+                    MyAsset(size: 200, color: colorFromHex("7d0022")),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Excellent',
+                      style: _style2.copyWith(
+                          color: Colors.grey.shade500, fontSize: 13),
+                    ),
+                    Text(
+                      'Severe',
+                      style: _style2.copyWith(
+                          color: Colors.grey.shade500, fontSize: 13),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         )
       ],

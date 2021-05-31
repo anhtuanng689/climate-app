@@ -4,6 +4,7 @@ import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/endDrawer.dart';
 import 'package:flutter_weather/widgets/internetError.dart';
+import 'package:flutter_weather/widgets/weatherChart.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -47,11 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     super.dispose();
     _pageController.dispose();
-  }
-
-  Future<void> checkInternet() async {
-    Provider.of<ConnectivityChangeNotifier>(context, listen: false)
-        .initialLoad();
   }
 
   Future<void> _getData() async {
@@ -134,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     controller: _pageController,
                                     children: [
                                       Container(
-                                        padding: const EdgeInsets.all(10),
+                                        padding: EdgeInsets.all(10),
                                         width: mediaQuery.size.width,
                                         child: RefreshIndicator(
                                           onRefresh: () =>
@@ -143,12 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: ListView(
                                             children: [
                                               FadeIn(
-                                                  delay: 0,
-                                                  child: MainWeather(
-                                                    wData: weatherData,
-                                                    weatherData: weatherData
-                                                        .sevenDayWeather,
-                                                  )),
+                                                delay: 0,
+                                                child: MainWeather(
+                                                  wData: weatherData,
+                                                  weatherData: weatherData
+                                                      .sevenDayWeather,
+                                                ),
+                                              ),
                                               FadeIn(
                                                 delay: 0.33,
                                                 child: WeatherInfo(
@@ -167,13 +164,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 child:
                                                     Aqi(wData: weatherData.aqi),
                                               ),
+                                              FadeIn(
+                                                delay: 0.66,
+                                                child: WeatherBarChart(
+                                                  wData: weatherData,
+                                                ),
+                                              )
                                             ],
                                           ),
                                         ),
                                       ),
                                       Container(
-                                        height: mediaQuery.size.height,
-                                        width: mediaQuery.size.width,
                                         child: RefreshIndicator(
                                           onRefresh: () =>
                                               _refreshData(context),

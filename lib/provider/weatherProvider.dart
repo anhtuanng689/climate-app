@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather/database/DatabaseProvider.dart';
+import 'package:flutter_weather/models/AqiDetail.dart';
 import 'package:flutter_weather/models/choice.dart';
 import 'package:flutter_weather/models/city.dart';
 import 'package:flutter_weather/services/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
 import 'dart:convert';
 
+import 'package:flutter_weather/models/chart.dart';
 import '../models/weather.dart';
 import '../models/dailyWeather.dart';
 import '../models/aqi.dart';
@@ -14,10 +15,13 @@ import '../models/aqi.dart';
 class WeatherProvider with ChangeNotifier {
   String apiKeyOpenWeatherMap = 'c129d6d70d7dd89e779d849956cde9e9';
   String apiKeyAirVisual = '79caf38e-b7cf-45f7-a6b9-6d54c06f9e69';
+
   Weather weather = Weather();
   DailyWeather currentWeather = DailyWeather();
   Aqi aqi = Aqi();
+  AqiDetail aqiDetail = AqiDetail();
   Choice choice = Choice();
+  Chart chart = Chart();
 
   LocationService locationService = LocationService();
 
@@ -28,6 +32,7 @@ class WeatherProvider with ChangeNotifier {
   List<DailyWeather> hourly24Weather = [];
   List<DailyWeather> sevenDayWeather = [];
   List<City> listCity = [];
+  List<Chart> listPrepChart = [];
 
   bool loading;
   bool isRequestError = false;
@@ -91,6 +96,10 @@ class WeatherProvider with ChangeNotifier {
           'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKeyOpenWeatherMap');
       Uri dailyUrl = Uri.parse(
           'https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely,current&appid=$apiKeyOpenWeatherMap');
+
+      Uri aqiDetailUrl = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/air_pollution?lat=$latitude&lon=$longitude&appid=$apiKeyOpenWeatherMap&units=metric');
+
       Uri aqiUrl = Uri.parse(
           'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
       try {
@@ -110,6 +119,7 @@ class WeatherProvider with ChangeNotifier {
         var tempHourly = [];
         var temp24Hour = [];
         var tempSevenDay = [];
+        var tempPrepChart = [];
         List items = dailyData['daily'];
         List itemsHourly = dailyData['hourly'];
         tempHourly = itemsHourly
@@ -130,9 +140,16 @@ class WeatherProvider with ChangeNotifier {
             .skip(1)
             .take(7)
             .toList();
+        tempPrepChart = itemsHourly
+            .map((item) => Chart.fromMap(item))
+            .toList()
+            .skip(1)
+            .take(5)
+            .toList();
         hourlyWeather = tempHourly;
         hourly24Weather = temp24Hour;
         sevenDayWeather = tempSevenDay;
+        listPrepChart = tempPrepChart;
       } catch (error) {
         loading = false;
         this.isRequestError = true;
@@ -150,6 +167,19 @@ class WeatherProvider with ChangeNotifier {
         this.isRequestError = true;
         notifyListeners();
       }
+
+      try {
+        final response = await http.get(aqiDetailUrl);
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
+        aqiDetail = AqiDetail.fromJson(extractedData);
+        loading = false;
+      } catch (error) {
+        loading = false;
+        this.isRequestError = true;
+        notifyListeners();
+      }
+
       loadCalUnit();
       notifyListeners();
     }
@@ -261,11 +291,11 @@ class WeatherProvider with ChangeNotifier {
     try {
       final response = await http.get(dailyUrl);
       final dailyData = json.decode(response.body) as Map<String, dynamic>;
-      print(dailyUrl);
       currentWeather = DailyWeather.fromJson(dailyData);
       var tempHourly = [];
       var temp24Hour = [];
       var tempSevenDay = [];
+      var tempPrepChart = [];
       List items = dailyData['daily'];
       List itemsHourly = dailyData['hourly'];
       tempHourly = itemsHourly
@@ -286,30 +316,51 @@ class WeatherProvider with ChangeNotifier {
           .skip(1)
           .take(7)
           .toList();
+      tempPrepChart = itemsHourly
+          .map((item) => Chart.fromMap(item))
+          .toList()
+          .skip(0)
+          .take(5)
+          .toList();
       hourlyWeather = tempHourly;
       hourly24Weather = temp24Hour;
       sevenDayWeather = tempSevenDay;
-      notifyListeners();
+      listPrepChart = tempPrepChart;
     } catch (error) {
       loading = false;
       this.isRequestError = true;
       notifyListeners();
       throw error;
     }
+
     Uri aqiUrl = Uri.parse(
         'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
+
+    Uri aqiDetailUrl = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/air_pollution?lat=$latitude&lon=$longitude&appid=$apiKeyOpenWeatherMap&units=metric');
     try {
       final response = await http.get(aqiUrl);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       aqi = Aqi.fromJson(extractedData);
       loading = false;
-      notifyListeners();
     } catch (error) {
       loading = false;
       this.isRequestError = true;
       notifyListeners();
       throw error;
     }
+
+    try {
+      final response = await http.get(aqiDetailUrl);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      aqiDetail = AqiDetail.fromJson(extractedData);
+      loading = false;
+    } catch (error) {
+      loading = false;
+      this.isRequestError = true;
+      notifyListeners();
+    }
+    notifyListeners();
   }
 
   getWeatherLocationEndDrawer() async {

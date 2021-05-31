@@ -34,11 +34,32 @@ class WeeklyScreen extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child:
-                    MapString.mapStringToIcon(weather.condition, context, 25),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.175,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: MapString.mapStringToIcon(weather.condition,
+                          context, MediaQuery.of(context).size.width * 0.06),
+                    ),
+                    if ((((weather.precip * 100 / 10).round()) * 10) >= 20)
+                      Text(
+                        '${(((weather.precip * 100 / 10).round()) * 10).toString()}%',
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.035,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.blue),
+                      ),
+                  ],
+                ),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.only(bottom: 15),
+              //   child:
+              //       MapString.mapStringToIcon(weather.condition, context, 25),
+              // ),
               Spacer(),
               Text(
                 Temperature.getTemperatureWithoutPoint(

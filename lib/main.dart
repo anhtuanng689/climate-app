@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_weather/screens/SettingScreen.dart';
 import 'package:flutter_weather/screens/addCityScreen.dart';
+import 'package:flutter_weather/screens/chartScreen.dart';
 import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
+import 'package:flutter_weather/widgets/internetError.dart';
 import 'package:provider/provider.dart';
 
 import './Screens/hourlyWeatherScreen.dart';
 import './provider/weatherProvider.dart';
 import './Screens/weeklyWeatherScreen.dart';
 import './Screens/homeScreen.dart';
+import 'screens/aqiScreen.dart';
+import 'screens/chartScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +48,7 @@ class MyApp extends StatelessWidget {
             changeNotifier.initialLoad();
             return changeNotifier;
           },
+          child: InternetError(),
         ),
       ],
       child: MaterialApp(
@@ -67,6 +72,8 @@ class MyApp extends StatelessWidget {
           HourlyScreen.routeName: (myCtx) => HourlyScreen(),
           SettingScreen.routeName: (myCtx) => SettingScreen(),
           AddCityScreen.routeName: (myCtx) => AddCityScreen(),
+          AqiScreen.routeName: (myCtx) => AqiScreen(),
+          ChartScreen.routeName: (myCtx) => ChartScreen(),
         },
       ),
     );

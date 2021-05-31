@@ -68,7 +68,7 @@ class WeatherInfo extends StatelessWidget {
               width: MediaQuery.of(context).size.width / 2.3,
               child: _weatherInfoBuilder(
                 'Precipitation',
-                '${wData.precip}%',
+                '${(((wData.precip * 100 / 10).round()) * 10)}%',
                 WeatherIcons.wiRaindrops,
                 0,
                 50,

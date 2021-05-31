@@ -55,7 +55,8 @@ class DatabaseProvider {
     final db = await initDB();
     // final db = await database;
 
-    var result = await db.query("worldcities", columns: ['city']);
+    var result =
+        await db.query("worldcities", columns: ['city'], distinct: true);
     List<City> list = result.isNotEmpty
         ? result.map<City>((e) => City.fromMap(e)).toList()
         : [];

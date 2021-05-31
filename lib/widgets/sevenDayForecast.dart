@@ -46,13 +46,30 @@ class SevenDayForecast extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 25, left: 20),
-          child: Text(
-            'Next 7 Days',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
+          padding: const EdgeInsets.only(top: 25, left: 20, right: 20),
+          child: Row(
+            children: [
+              Text(
+                'Next 7 Days',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Spacer(),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(WeeklyScreen.routeName);
+                },
+                child: Text(
+                  'See more',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4dabd5)),
+                ),
+              ),
+            ],
           ),
         ),
         GestureDetector(
