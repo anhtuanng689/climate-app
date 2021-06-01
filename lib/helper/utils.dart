@@ -50,11 +50,11 @@ class Temperature {
 class WindSpeed {
   static String getWindSpeedChoice(dynamic windSpeed, int choice) {
     if (choice == 0) {
-      return '${(windSpeed / 3.6).toStringAsFixed(2)} m/s';
+      return '$windSpeed m/s';
     } else if (choice == 1) {
-      return '$windSpeed km/h';
+      return '${(windSpeed * 3.6).toStringAsFixed(2)} km/h';
     } else {
-      return '${(windSpeed / 0.621371).toStringAsFixed(2)} mph';
+      return '${(windSpeed * 2.23693629).toStringAsFixed(2)} mph';
     }
   }
 }

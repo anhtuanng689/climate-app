@@ -4,7 +4,7 @@ import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/endDrawer.dart';
 import 'package:flutter_weather/widgets/internetError.dart';
-import 'package:flutter_weather/widgets/weatherChart.dart';
+import 'package:flutter_weather/widgets/prepChart.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: ListView(
                                             children: [
                                               FadeIn(
-                                                delay: 0,
+                                                delay: 0.1,
                                                 child: MainWeather(
                                                   wData: weatherData,
                                                   weatherData: weatherData
@@ -166,8 +166,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               FadeIn(
                                                 delay: 0.66,
-                                                child: WeatherBarChart(
-                                                  wData: weatherData,
+                                                child: PrepChart(
+                                                  listData:
+                                                      weatherData.listChart,
+                                                  chartId: 'Prep',
+                                                  chartName: 'Precipitation',
+                                                  max: 100,
+                                                  min: 0,
+                                                  isHome: true,
                                                 ),
                                               )
                                             ],

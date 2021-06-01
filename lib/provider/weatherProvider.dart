@@ -32,7 +32,7 @@ class WeatherProvider with ChangeNotifier {
   List<DailyWeather> hourly24Weather = [];
   List<DailyWeather> sevenDayWeather = [];
   List<City> listCity = [];
-  List<Chart> listPrepChart = [];
+  List<Chart> listChart = [];
 
   bool loading;
   bool isRequestError = false;
@@ -149,7 +149,7 @@ class WeatherProvider with ChangeNotifier {
         hourlyWeather = tempHourly;
         hourly24Weather = temp24Hour;
         sevenDayWeather = tempSevenDay;
-        listPrepChart = tempPrepChart;
+        listChart = tempPrepChart;
       } catch (error) {
         loading = false;
         this.isRequestError = true;
@@ -325,7 +325,7 @@ class WeatherProvider with ChangeNotifier {
       hourlyWeather = tempHourly;
       hourly24Weather = temp24Hour;
       sevenDayWeather = tempSevenDay;
-      listPrepChart = tempPrepChart;
+      listChart = tempPrepChart;
     } catch (error) {
       loading = false;
       this.isRequestError = true;
