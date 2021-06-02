@@ -21,13 +21,13 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   final TextStyle _style1 = TextStyle(
     fontWeight: FontWeight.w700,
-    fontSize: 20,
+    fontSize: 17,
   );
 
   final TextStyle _style2 = TextStyle(
     fontWeight: FontWeight.w400,
     color: Colors.grey[700],
-    fontSize: 16,
+    fontSize: 15,
   );
 
   updateChoice(Choice choice) async {

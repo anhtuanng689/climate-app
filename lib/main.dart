@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_weather/screens/SettingScreen.dart';
 import 'package:flutter_weather/screens/addCityScreen.dart';
 import 'package:flutter_weather/screens/chartScreen.dart';
+import 'package:flutter_weather/screens/radarScreen.dart';
 import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/internetError.dart';
@@ -15,6 +16,8 @@ import './Screens/weeklyWeatherScreen.dart';
 import './Screens/homeScreen.dart';
 import 'screens/aqiScreen.dart';
 import 'screens/chartScreen.dart';
+import 'screens/moonPhaseCalendar.dart';
+import 'screens/radarScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +77,8 @@ class MyApp extends StatelessWidget {
           AddCityScreen.routeName: (myCtx) => AddCityScreen(),
           AqiScreen.routeName: (myCtx) => AqiScreen(),
           ChartScreen.routeName: (myCtx) => ChartScreen(),
+          MoonPhaseCalendar.routeName: (myCtx) => MoonPhaseCalendar(),
+          RadarScreen.routeName: (myCtx) => RadarScreen(),
         },
       ),
     );

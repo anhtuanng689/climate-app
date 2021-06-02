@@ -26,6 +26,7 @@ class LocationService {
 
     currentPosition = await location.getLocation();
     print("curPos: $currentPosition");
+    print("dateTime: ${currentPosition.time}");
 
     if (currentPosition.latitude == null) {
       return null;

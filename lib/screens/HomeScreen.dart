@@ -4,7 +4,9 @@ import 'package:flutter_weather/services/internet.dart';
 import 'package:flutter_weather/services/notification.dart';
 import 'package:flutter_weather/widgets/endDrawer.dart';
 import 'package:flutter_weather/widgets/internetError.dart';
+import 'package:flutter_weather/widgets/moonPhase.dart';
 import 'package:flutter_weather/widgets/prepChart.dart';
+import 'package:flutter_weather/widgets/radar.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -161,11 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               FadeIn(
                                                 delay: 0.55,
-                                                child:
-                                                    Aqi(wData: weatherData.aqi),
-                                              ),
-                                              FadeIn(
-                                                delay: 0.66,
                                                 child: PrepChart(
                                                   listData:
                                                       weatherData.listChart,
@@ -175,7 +172,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   min: 0,
                                                   isHome: true,
                                                 ),
-                                              )
+                                              ),
+                                              FadeIn(
+                                                delay: 0.66,
+                                                child:
+                                                    Aqi(wData: weatherData.aqi),
+                                              ),
+                                              FadeIn(
+                                                delay: 0.77,
+                                                child: MoonPhase(
+                                                  wData: weatherData,
+                                                ),
+                                              ),
+                                              FadeIn(
+                                                delay: 0.88,
+                                                child: Radar(
+                                                  wData: weatherData,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),

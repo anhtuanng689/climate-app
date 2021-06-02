@@ -16,6 +16,7 @@ class Weather with ChangeNotifier {
   var sunrise;
   var sunset;
   var visibility;
+  int time;
 
   Weather(
       {this.temp,
@@ -31,7 +32,9 @@ class Weather with ChangeNotifier {
       this.windSpeed,
       this.cityName,
       this.sunrise,
-      this.sunset, this.visibility});
+      this.sunset,
+      this.visibility,
+      this.time});
 
   factory Weather.fromJson(Map<String, dynamic> json) {
     return Weather(
@@ -50,6 +53,7 @@ class Weather with ChangeNotifier {
       sunrise: json['sys']['sunrise'],
       sunset: json['sys']['sunset'],
       visibility: json['visibility'],
+      time: json['dt'] as int,
     );
   }
 }

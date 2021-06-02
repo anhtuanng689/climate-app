@@ -3,6 +3,7 @@ import 'package:flutter_weather/database/DatabaseProvider.dart';
 import 'package:flutter_weather/models/AqiDetail.dart';
 import 'package:flutter_weather/models/choice.dart';
 import 'package:flutter_weather/models/city.dart';
+import 'package:flutter_weather/models/moon.dart';
 import 'package:flutter_weather/services/location.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,6 +23,7 @@ class WeatherProvider with ChangeNotifier {
   AqiDetail aqiDetail = AqiDetail();
   Choice choice = Choice();
   Chart chart = Chart();
+  Moon moon = Moon();
 
   LocationService locationService = LocationService();
 
@@ -45,6 +47,8 @@ class WeatherProvider with ChangeNotifier {
   int distanceChoice;
   int pressureChoice;
   int notificationChoice;
+
+  int dateTime;
 
   loadCalUnit() async {
     choice = await DatabaseProvider.fetchChoice();
@@ -92,6 +96,7 @@ class WeatherProvider with ChangeNotifier {
     } else {
       var latitude = locData.latitude;
       var longitude = locData.longitude;
+      dateTime = (locData.time / 1000).toInt();
       Uri url = Uri.parse(
           'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKeyOpenWeatherMap');
       Uri dailyUrl = Uri.parse(
@@ -102,6 +107,10 @@ class WeatherProvider with ChangeNotifier {
 
       Uri aqiUrl = Uri.parse(
           'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
+
+      Uri moonUrl = Uri.parse(
+          'https://api.farmsense.net/v1/moonphases/?d=${dateTime.toInt()}');
+
       try {
         final response = await http.get(url);
         final extractedData =
@@ -156,6 +165,7 @@ class WeatherProvider with ChangeNotifier {
         notifyListeners();
         throw error;
       }
+
       try {
         final response = await http.get(aqiUrl);
         final extractedData =
@@ -180,89 +190,19 @@ class WeatherProvider with ChangeNotifier {
         notifyListeners();
       }
 
+      try {
+        final response = await http.get(moonUrl);
+        final extractedData = json.decode(response.body);
+        moon = Moon.fromJson(extractedData[0]);
+      } catch (error) {
+        loading = false;
+        this.isRequestError = true;
+        notifyListeners();
+      }
+
       loadCalUnit();
       notifyListeners();
     }
-
-    // await Location().requestService().then((value) async {
-    //   if (value) {
-    //     final locData = await Location().getLocation();
-    //     var latitude = locData.latitude;
-    //     var longitude = locData.longitude;
-    //     Uri url = Uri.parse(
-    //         'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=metric&appid=$apiKeyOpenWeatherMap');
-    //     Uri dailyUrl = Uri.parse(
-    //         'https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely,current&appid=$apiKeyOpenWeatherMap');
-    //     Uri aqiUrl = Uri.parse(
-    //         'https://api.airvisual.com/v2/nearest_city?lat=$latitude&lon=$longitude&key=$apiKeyAirVisual');
-    //     try {
-    //       final response = await http.get(url);
-    //       final extractedData =
-    //           json.decode(response.body) as Map<String, dynamic>;
-    //       weather = Weather.fromJson(extractedData);
-    //     } catch (error) {
-    //       loading = false;
-    //       this.isRequestError = true;
-    //       notifyListeners();
-    //     }
-    //     try {
-    //       final response = await http.get(dailyUrl);
-    //       final dailyData = json.decode(response.body) as Map<String, dynamic>;
-    //       currentWeather = DailyWeather.fromJson(dailyData);
-    //       var tempHourly = [];
-    //       var temp24Hour = [];
-    //       var tempSevenDay = [];
-    //       List items = dailyData['daily'];
-    //       List itemsHourly = dailyData['hourly'];
-    //       tempHourly = itemsHourly
-    //           .map((item) => DailyWeather.fromHourlyJson(item))
-    //           .toList()
-    //           .skip(1)
-    //           .take(3)
-    //           .toList();
-    //       temp24Hour = itemsHourly
-    //           .map((item) => DailyWeather.fromHourlyJson(item))
-    //           .toList()
-    //           .skip(1)
-    //           .take(24)
-    //           .toList();
-    //       tempSevenDay = items
-    //           .map((item) => DailyWeather.fromDailyJson(item))
-    //           .toList()
-    //           .skip(1)
-    //           .take(7)
-    //           .toList();
-    //       hourlyWeather = tempHourly;
-    //       hourly24Weather = temp24Hour;
-    //       sevenDayWeather = tempSevenDay;
-    //       notifyListeners();
-    //     } catch (error) {
-    //       loading = false;
-    //       this.isRequestError = true;
-    //       notifyListeners();
-    //       throw error;
-    //     }
-    //     try {
-    //       final response = await http.get(aqiUrl);
-    //       final extractedData =
-    //           json.decode(response.body) as Map<String, dynamic>;
-    //       aqi = Aqi.fromJson(extractedData);
-    //       loading = false;
-    //       notifyListeners();
-    //     } catch (error) {
-    //       loading = false;
-    //       this.isRequestError = true;
-    //       notifyListeners();
-    //     }
-    //
-    //     loadCalUnit();
-    //   } else {
-    //     loading = false;
-    //     isLocationError = true;
-    //     print('loi location');
-    //     notifyListeners();
-    //   }
-    // });
   }
 
   searchWeatherData({String location}) async {
@@ -284,8 +224,10 @@ class WeatherProvider with ChangeNotifier {
     }
     var latitude = weather.lat;
     var longitude = weather.long;
+    dateTime = weather.time;
     print(latitude);
     print(longitude);
+    print(dateTime);
     Uri dailyUrl = Uri.parse(
         'https://api.openweathermap.org/data/2.5/onecall?lat=$latitude&lon=$longitude&units=metric&exclude=minutely,current&appid=$apiKeyOpenWeatherMap');
     try {
@@ -360,6 +302,19 @@ class WeatherProvider with ChangeNotifier {
       this.isRequestError = true;
       notifyListeners();
     }
+
+    Uri moonUrl = Uri.parse(
+        'https://api.farmsense.net/v1/moonphases/?d=${dateTime.toInt()}');
+    try {
+      final response = await http.get(moonUrl);
+      final extractedData = json.decode(response.body);
+      moon = Moon.fromJson(extractedData[0]);
+    } catch (error) {
+      loading = false;
+      this.isRequestError = true;
+      notifyListeners();
+    }
+
     notifyListeners();
   }
 
@@ -379,12 +334,6 @@ class WeatherProvider with ChangeNotifier {
       cityList.add(city.cityName);
     }
 
-    // if (listWeather.isNotEmpty) {
-    //   listWeather.clear();
-    //   print('listWeather after clean: $listWeather');
-    // }
-
-    // await loadCity();
     print('cityList: $cityList');
     print('listWeather: $listWeather');
 

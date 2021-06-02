@@ -76,7 +76,7 @@ class PrepChart extends StatelessWidget {
             [
               charts.Series<Chart, String>(
                 id: chartId,
-                colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+                colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
                 domainFn: (Chart chart, _) => chart.time,
                 measureFn: (Chart chart, _) => chart.prep,
                 measureUpperBoundFn: (Chart chart, _) => max,

@@ -55,7 +55,7 @@ class Aqi extends StatelessWidget {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.2475,
+          height: MediaQuery.of(context).size.height * 0.22,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.all(15),
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -83,12 +83,14 @@ class Aqi extends StatelessWidget {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.2,
                       child: Center(
-                        child: Text(
-                          '${wData.aqi}',
-                          style: TextStyle(
-                            fontSize: 43,
-                            color: AqiString.colorFromHexss(
-                                AqiString.getAqiColor(wData.aqi)),
+                        child: FittedBox(
+                          child: Text(
+                            '${wData.aqi}',
+                            style: TextStyle(
+                              fontSize: 43,
+                              color: AqiString.colorFromHexss(
+                                  AqiString.getAqiColor(wData.aqi)),
+                            ),
                           ),
                         ),
                       ),
@@ -99,16 +101,20 @@ class Aqi extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            AqiString.getAqiLevel(wData.aqi),
-                            style: _style1.copyWith(fontSize: 23),
+                          FittedBox(
+                            child: Text(
+                              AqiString.getAqiLevel(wData.aqi),
+                              style: _style1.copyWith(fontSize: 23),
+                            ),
                           ),
                           SizedBox(
                             height: 5,
                           ),
-                          Text(
-                            AqiString.getAqiRecommend(wData.aqi),
-                            style: _style2.copyWith(fontSize: 16),
+                          FittedBox(
+                            child: Text(
+                              AqiString.getAqiRecommend(wData.aqi),
+                              style: _style2.copyWith(fontSize: 16),
+                            ),
                           ),
                         ],
                       ),
@@ -159,12 +165,12 @@ class Aqi extends StatelessWidget {
                     Text(
                       'Excellent',
                       style: _style2.copyWith(
-                          color: Colors.grey.shade500, fontSize: 13),
+                          color: Colors.grey.shade800, fontSize: 13),
                     ),
                     Text(
                       'Severe',
                       style: _style2.copyWith(
-                          color: Colors.grey.shade500, fontSize: 13),
+                          color: Colors.grey.shade800, fontSize: 13),
                     ),
                   ],
                 ),
