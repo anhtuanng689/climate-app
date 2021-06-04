@@ -80,7 +80,7 @@ class MoonPhase extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        'Today',
+                        'Present',
                         style: _style2,
                       ),
                       Spacer(),
@@ -103,17 +103,17 @@ class MoonPhase extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).values.toList()[0] * 1000))}',
+                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime + 86400) * 1000))}',
                         style: _style2,
                       ),
                       Spacer(),
                       Image.asset(
-                        'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[0])}.png',
+                        'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.dateTime).elementAt(0))}.png',
                         scale: 0.85,
                       ),
                       Spacer(),
                       Text(
-                        '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[0])}',
+                        '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.dateTime).elementAt(0))}',
                         style: _style1,
                       ),
                       Spacer(),
@@ -126,23 +126,69 @@ class MoonPhase extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).values.toList()[1] * 1000))}',
+                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime + 86400 * 2) * 1000))}',
                         style: _style2,
                       ),
                       Spacer(),
                       Image.asset(
-                        'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[1])}.png',
+                        'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.dateTime).elementAt(1))}.png',
                         scale: 0.85,
                       ),
                       Spacer(),
                       Text(
-                        '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[1])}',
+                        '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.dateTime).elementAt(1))}',
                         style: _style1,
                       ),
                       Spacer(),
                     ],
                   ),
                 ),
+                // Expanded(
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Spacer(),
+                //       Text(
+                //         '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).values.toList()[0] * 1000))}',
+                //         style: _style2,
+                //       ),
+                //       Spacer(),
+                //       Image.asset(
+                //         'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[0])}.png',
+                //         scale: 0.85,
+                //       ),
+                //       Spacer(),
+                //       Text(
+                //         '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[0])}',
+                //         style: _style1,
+                //       ),
+                //       Spacer(),
+                //     ],
+                //   ),
+                // ),
+                // Expanded(
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Spacer(),
+                //       Text(
+                //         '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).values.toList()[1] * 1000))}',
+                //         style: _style2,
+                //       ),
+                //       Spacer(),
+                //       Image.asset(
+                //         'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[1])}.png',
+                //         scale: 0.85,
+                //       ),
+                //       Spacer(),
+                //       Text(
+                //         '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.moon.age, wData.dateTime).keys.toList()[1])}',
+                //         style: _style1,
+                //       ),
+                //       Spacer(),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

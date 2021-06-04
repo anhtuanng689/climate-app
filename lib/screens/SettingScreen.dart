@@ -280,48 +280,48 @@ class _SettingScreenState extends State<SettingScreen> {
               //     ],
               //   ),
               // ),
-              Divider(color: Colors.black),
-              Container(
-                height: mediaQuery.height * 0.085,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(children: [
-                      Text(
-                        'Weather data',
-                        style: _style1,
-                      ),
-                      Spacer(),
-                      Text(
-                        'Open Weather Map',
-                        style: _style2.copyWith(color: Colors.grey),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-              Divider(color: Colors.black),
-              Container(
-                height: mediaQuery.height * 0.085,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(children: [
-                      Text(
-                        'Air quality data',
-                        style: _style1,
-                      ),
-                      Spacer(),
-                      Text(
-                        'Air Visual',
-                        style: _style2.copyWith(color: Colors.grey),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
+              // Divider(color: Colors.black),
+              // Container(
+              //   height: mediaQuery.height * 0.085,
+              //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              //   child: Column(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Row(children: [
+              //         Text(
+              //           'Weather data',
+              //           style: _style1,
+              //         ),
+              //         Spacer(),
+              //         Text(
+              //           'Open Weather Map',
+              //           style: _style2.copyWith(color: Colors.grey),
+              //         ),
+              //       ]),
+              //     ],
+              //   ),
+              // ),
+              // Divider(color: Colors.black),
+              // Container(
+              //   height: mediaQuery.height * 0.085,
+              //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              //   child: Column(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Row(children: [
+              //         Text(
+              //           'Air quality data',
+              //           style: _style1,
+              //         ),
+              //         Spacer(),
+              //         Text(
+              //           'Air Visual',
+              //           style: _style2.copyWith(color: Colors.grey),
+              //         ),
+              //       ]),
+              //     ],
+              //   ),
+              // ),
               Divider(color: Colors.black),
               Container(
                 height: mediaQuery.height * 0.085,

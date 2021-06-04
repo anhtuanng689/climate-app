@@ -184,77 +184,94 @@ class MoonString {
     if (age < 1)
       text = "new-moon";
     else if (age < 6.38264692644)
-      text = "waning-crescent-left";
+      text = "waxing-crescent-right";
     else if (age < 8.38264692644)
       text = "first-quarter";
     else if (age < 13.76529385288)
-      text = "waning-gibbous-left";
+      text = "waxing-gibbous-right";
     else if (age < 15.76529385288)
       text = "full-moon";
     else if (age < 21.14794077932)
-      text = "waxing-gibbous-right";
+      text = "waning-gibbous-left";
     else if (age < 23.14794077932)
       text = "last-quarter";
     else if (age < 28.53058770576)
-      text = "waxing-crescent-right";
+      text = "waning-crescent-left";
     else
       text = "new-moon";
     return text;
   }
 
-  static Map<double, int> getNextMoonPhase(double age, int dateTime) {
-    List<double> listStandardAge = [
-      1,
-      6.382646926,
-      8.382646926,
-      13.76529385,
-      15.76529385,
-      21.14794078,
-      23.14794078,
-      28.53058771,
-      29.53058771,
+  static List<double> getNextMoonPhase(int dateTime) {
+    int nextDateTime = dateTime + 86400;
+    int nextDateTimeAgain = nextDateTime + 86400;
+
+    String nextDay =
+        DateTime.fromMillisecondsSinceEpoch(nextDateTime * 1000).toString();
+
+    String nextDayAgain =
+        DateTime.fromMillisecondsSinceEpoch(nextDateTimeAgain * 1000)
+            .toString();
+
+    int year = int.parse(nextDay.substring(0, 3));
+    int month = int.parse(nextDay.substring(5, 6));
+    int day = int.parse(nextDay.substring(8, 9));
+
+    int year1 = int.parse(nextDayAgain.substring(0, 3));
+    int month1 = int.parse(nextDayAgain.substring(5, 6));
+    int day1 = int.parse(nextDayAgain.substring(8, 9));
+
+    List<double> result = [
+      moonPhaseFormula(year, month, day),
+      moonPhaseFormula(year1, month1, day1),
     ];
-    int index = 0;
-    for (int i = 1; i < listStandardAge.length; i++) {
-      index = i;
-      if (age < listStandardAge[i]) {
-        break;
-      }
-    }
-
-    // print('age: $age + $index');
-    // print('list index: ${listStandardAge[index]}');
-    // double distance = (listStandardAge[index] - age) * 86400;
-    // print('distance: $distance'); //so giay
-    // double nextTime = age + distance;
-    // double nextTimeAgain = nextTime +
-    //     (listStandardAge[index + 1] - listStandardAge[index]) * 86400;
-
-    double nextTime;
-    double nextTimeAgain;
-    double nextDay;
-    double nextDayAgain;
-    if (index == 8) {
-      nextTime = listStandardAge[index];
-      nextTimeAgain = listStandardAge[0];
-      nextDay = dateTime + (nextTime - age) * 86400;
-      nextDayAgain = dateTime + (nextTime - age + 0.5) * 86400;
-    } else {
-      nextTime = listStandardAge[index] + 0.1;
-      nextTimeAgain = listStandardAge[index + 1] + 0.1;
-      nextDay = dateTime + (nextTime - age) * 86400;
-      nextDayAgain = dateTime + (nextTimeAgain - age) * 86400;
-    }
-
-    // print(
-    //     '$age + $nextTime + $nextTimeAgain + $dateTime + $nextDay + $nextDayAgain');
-    Map<double, int> result = {
-      nextTime: nextDay.toInt(),
-      nextTimeAgain: nextDayAgain.toInt()
-    };
-
     return result;
   }
+
+  // static Map<double, int> getNextMoonPhase(double age, int dateTime) {
+
+  // List<double> listStandardAge = [
+  //   1,
+  //   6.382646926,
+  //   8.382646926,
+  //   13.76529385,
+  //   15.76529385,
+  //   21.14794078,
+  //   23.14794078,
+  //   28.53058771,
+  //   29.53058771,
+  // ];
+  // int index = 0;
+  // for (int i = 1; i < listStandardAge.length; i++) {
+  //   index = i;
+  //   if (age < listStandardAge[i]) {
+  //     break;
+  //   }
+  // }
+  //
+  // double nextTime;
+  // double nextTimeAgain;
+  // double nextDay;
+  // double nextDayAgain;
+  // if (index == 8) {
+  //   nextTime = listStandardAge[index] + 0.5;
+  //   nextTimeAgain = listStandardAge[0] + 0.5;
+  //   nextDay = dateTime + (nextTime - age) * 86400;
+  //   nextDayAgain = dateTime + (nextTime - age + 0.5) * 86400;
+  // } else {
+  //   nextTime = listStandardAge[index] + 0.5;
+  //   nextTimeAgain = listStandardAge[index + 1] + 0.5;
+  //   nextDay = dateTime + (nextTime - age) * 86400;
+  //   nextDayAgain = dateTime + (nextTimeAgain - age + 0.5) * 86400;
+  // }
+  //
+  // Map<double, int> result = {
+  //   nextTime: nextDay.toInt(),
+  //   nextTimeAgain: nextDayAgain.toInt()
+  // };
+  //
+  // return result;
+  // }
 
   static moonPhaseFormula(int year, int month, int day) {
     if (month == 1 || month == 2) {

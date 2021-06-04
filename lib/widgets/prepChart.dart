@@ -55,53 +55,58 @@ class PrepChart extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          margin: EdgeInsets.all(15),
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4),
-                spreadRadius: 0,
-                blurRadius: 15,
-                offset: Offset(6, 8),
-              ),
-            ],
+        GestureDetector(
+          onTap: () {
+            if (isHome) Navigator.pushNamed(context, ChartScreen.routeName);
+          },
+          child: Container(
+            margin: EdgeInsets.all(15),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 0,
+                  blurRadius: 15,
+                  offset: Offset(6, 8),
+                ),
+              ],
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: charts.BarChart(
+              [
+                charts.Series<Chart, String>(
+                  id: chartId,
+                  colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+                  domainFn: (Chart chart, _) => chart.time,
+                  measureFn: (Chart chart, _) => chart.prep,
+                  measureUpperBoundFn: (Chart chart, _) => max,
+                  measureLowerBoundFn: (Chart chart, _) => min,
+                  data: listData,
+                ),
+              ],
+              animate: true,
+            ),
+            // charts.TimeSeriesChart(
+            //   [
+            //     charts.Series<Chart, DateTime>(
+            //       id: chartId,
+            //       colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+            //       domainFn: (Chart chart, _) => chart.dateTime,
+            //       measureFn: (Chart chart, _) => chart.prep,
+            //       measureUpperBoundFn: (Chart chart, _) => max,
+            //       measureLowerBoundFn: (Chart chart, _) => min,
+            //       data: listData,
+            //     ),
+            //   ],
+            //   domainAxis: new charts.EndPointsTimeAxisSpec(),
+            //   dateTimeFactory: charts.LocalDateTimeFactory(),
+            //   animate: true,
+            // ),
           ),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.3,
-          child: charts.BarChart(
-            [
-              charts.Series<Chart, String>(
-                id: chartId,
-                colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-                domainFn: (Chart chart, _) => chart.time,
-                measureFn: (Chart chart, _) => chart.prep,
-                measureUpperBoundFn: (Chart chart, _) => max,
-                measureLowerBoundFn: (Chart chart, _) => min,
-                data: listData,
-              ),
-            ],
-            animate: true,
-          ),
-          // charts.TimeSeriesChart(
-          //   [
-          //     charts.Series<Chart, DateTime>(
-          //       id: chartId,
-          //       colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-          //       domainFn: (Chart chart, _) => chart.dateTime,
-          //       measureFn: (Chart chart, _) => chart.prep,
-          //       measureUpperBoundFn: (Chart chart, _) => max,
-          //       measureLowerBoundFn: (Chart chart, _) => min,
-          //       data: listData,
-          //     ),
-          //   ],
-          //   domainAxis: new charts.EndPointsTimeAxisSpec(),
-          //   dateTimeFactory: charts.LocalDateTimeFactory(),
-          //   animate: true,
-          // ),
         ),
       ],
     );

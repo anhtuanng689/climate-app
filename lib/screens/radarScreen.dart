@@ -39,8 +39,7 @@ class _RadarScreenState extends State<RadarScreen> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: WebView(
-            initialUrl:
-                'https://zoom.earth/#view=23.98,111.38,6z/date=2021-06-02,22:00,+7/layers=wind',
+            initialUrl: 'https://zoom.earth',
             javascriptMode: JavascriptMode.unrestricted,
           ),
         ),
