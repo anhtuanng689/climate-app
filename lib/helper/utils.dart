@@ -206,6 +206,9 @@ class MoonString {
     int nextDateTime = dateTime + 86400;
     int nextDateTimeAgain = nextDateTime + 86400;
 
+    String today =
+        DateTime.fromMillisecondsSinceEpoch(dateTime * 1000).toString();
+
     String nextDay =
         DateTime.fromMillisecondsSinceEpoch(nextDateTime * 1000).toString();
 
@@ -213,17 +216,22 @@ class MoonString {
         DateTime.fromMillisecondsSinceEpoch(nextDateTimeAgain * 1000)
             .toString();
 
-    int year = int.parse(nextDay.substring(0, 3));
-    int month = int.parse(nextDay.substring(5, 6));
-    int day = int.parse(nextDay.substring(8, 9));
+    int year = int.parse(today.substring(0, 3));
+    int month = int.parse(today.substring(5, 6));
+    int day = int.parse(today.substring(8, 9));
 
-    int year1 = int.parse(nextDayAgain.substring(0, 3));
-    int month1 = int.parse(nextDayAgain.substring(5, 6));
-    int day1 = int.parse(nextDayAgain.substring(8, 9));
+    int year1 = int.parse(nextDay.substring(0, 3));
+    int month1 = int.parse(nextDay.substring(5, 6));
+    int day1 = int.parse(nextDay.substring(8, 9));
+
+    int year2 = int.parse(nextDayAgain.substring(0, 3));
+    int month2 = int.parse(nextDayAgain.substring(5, 6));
+    int day2 = int.parse(nextDayAgain.substring(8, 9));
 
     List<double> result = [
       moonPhaseFormula(year, month, day),
       moonPhaseFormula(year1, month1, day1),
+      moonPhaseFormula(year2, month2, day2),
     ];
     return result;
   }

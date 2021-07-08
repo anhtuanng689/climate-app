@@ -80,30 +80,7 @@ class MoonPhase extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        'Present',
-                        style: _style2,
-                      ),
-                      Spacer(),
-                      Image.asset(
-                        'assets/${MoonString.getMoonImage(wData.moon.age)}.png',
-                        scale: 0.85,
-                      ),
-                      Spacer(),
-                      Text(
-                        '${MoonString.getMoonPhase(wData.moon.age)}',
-                        style: _style1,
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Spacer(),
-                      Text(
-                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime + 86400) * 1000))}',
+                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime) * 1000))}',
                         style: _style2,
                       ),
                       Spacer(),
@@ -126,7 +103,7 @@ class MoonPhase extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(
-                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime + 86400 * 2) * 1000))}',
+                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime + 86400) * 1000))}',
                         style: _style2,
                       ),
                       Spacer(),
@@ -137,6 +114,29 @@ class MoonPhase extends StatelessWidget {
                       Spacer(),
                       Text(
                         '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.dateTime).elementAt(1))}',
+                        style: _style1,
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Spacer(),
+                      Text(
+                        '${DateFormat.MMMMd().format(DateTime.fromMillisecondsSinceEpoch((wData.dateTime + 86400 * 2) * 1000))}',
+                        style: _style2,
+                      ),
+                      Spacer(),
+                      Image.asset(
+                        'assets/${MoonString.getMoonImage(MoonString.getNextMoonPhase(wData.dateTime).elementAt(2))}.png',
+                        scale: 0.85,
+                      ),
+                      Spacer(),
+                      Text(
+                        '${MoonString.getMoonPhase(MoonString.getNextMoonPhase(wData.dateTime).elementAt(2))}',
                         style: _style1,
                       ),
                       Spacer(),

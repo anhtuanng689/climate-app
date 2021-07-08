@@ -23,7 +23,7 @@ class WeatherProvider with ChangeNotifier {
   AqiDetail aqiDetail = AqiDetail();
   Choice choice = Choice();
   Chart chart = Chart();
-  Moon moon = Moon();
+  // Moon moon = Moon();
 
   LocationService locationService = LocationService();
 
@@ -190,15 +190,16 @@ class WeatherProvider with ChangeNotifier {
         notifyListeners();
       }
 
-      try {
-        final response = await http.get(moonUrl);
-        final extractedData = json.decode(response.body);
-        moon = Moon.fromJson(extractedData[0]);
-      } catch (error) {
-        loading = false;
-        this.isRequestError = true;
-        notifyListeners();
-      }
+      // try {
+      //   final response = await http.get(moonUrl);
+      //   final extractedData = json.decode(response.body);
+      //   print(response.statusCode);
+      //   moon = Moon.fromJson(extractedData[0]);
+      // } catch (error) {
+      //   // loading = false;
+      //   // this.isRequestError = true;
+      //   notifyListeners();
+      // }
 
       loadCalUnit();
       notifyListeners();
@@ -302,18 +303,18 @@ class WeatherProvider with ChangeNotifier {
       this.isRequestError = true;
       notifyListeners();
     }
-
-    Uri moonUrl = Uri.parse(
-        'https://api.farmsense.net/v1/moonphases/?d=${dateTime.toInt()}');
-    try {
-      final response = await http.get(moonUrl);
-      final extractedData = json.decode(response.body);
-      moon = Moon.fromJson(extractedData[0]);
-    } catch (error) {
-      loading = false;
-      this.isRequestError = true;
-      notifyListeners();
-    }
+    //
+    // Uri moonUrl = Uri.parse(
+    //     'https://api.farmsense.net/v1/moonphases/?d=${dateTime.toInt()}');
+    // try {
+    //   final response = await http.get(moonUrl);
+    //   final extractedData = json.decode(response.body);
+    //   moon = Moon.fromJson(extractedData[0]);
+    // } catch (error) {
+    //   loading = false;
+    //   this.isRequestError = true;
+    //   notifyListeners();
+    // }
 
     notifyListeners();
   }
